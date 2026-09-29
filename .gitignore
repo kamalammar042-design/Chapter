@@ -13,3 +13,4 @@ test-results
 .vercel
 .netlify
 demo-video
+supabase/.access-token
