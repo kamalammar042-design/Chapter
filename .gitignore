@@ -18,3 +18,4 @@ dist-live
 test-results-live
 
 .vercel
+test-results-store

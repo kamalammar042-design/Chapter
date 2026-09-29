@@ -4,6 +4,7 @@
 import { chromium } from '@playwright/test';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
+import { mkdirSync } from 'node:fs';
 
 const pub = join(dirname(fileURLToPath(import.meta.url)), '..', 'public');
 
@@ -50,6 +51,9 @@ await render(mark(180, { radius: 0 }), 180, 180, 'apple-touch-icon.png');
 await render(mark(192), 192, 192, 'icon-192.png');
 await render(mark(512), 512, 512, 'icon-512.png');
 await render(mark(512, { padding: 96 }), 512, 512, 'icon-maskable-512.png');
+// Devpost / store icon: full square (stores round the corners themselves), no transparency
+mkdirSync(join(pub, '..', 'submission'), { recursive: true });
+await render(mark(1024, { radius: 0 }), 1024, 1024, '../submission/icon-1024.png');
 await page.setViewportSize({ width: 1200, height: 630 });
 await page.setContent(og);
 await page.screenshot({ path: join(pub, 'og-image.png') });

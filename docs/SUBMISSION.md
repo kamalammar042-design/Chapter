@@ -10,6 +10,10 @@ Everything needed for the Devpost form, ready to paste. Deadline: **30 September
 - [ ] **Demo video under 2 minutes** (script below), uploaded to YouTube or Vimeo as public or unlisted
 - [x] **Try-it link**: https://chapter-sepia-omega.vercel.app (Vercel, connected to the live Supabase project)
 - [ ] Text description (below)
+- [x] **App icon 1024 × 1024**: `submission/icon-1024.png` (regenerate with `npm run icons`)
+- [x] **Screenshots 1179 × 2556, no device frame**: `submission/screenshots/` (10 screens captured from the live site by a real account that practised and was then deleted; regenerate with `npx playwright test --config playwright.store.config.ts` and `LIVE_URL` set)
+- [ ] **Judge access to premium**: Chapter Plus runs in RevenueCat's sandbox, so judges unlock it with test card `4242 4242 4242 4242` at no cost (the Plus card says so). Put this in the Devpost "testing instructions" field
+- [ ] **Store listing URL**: not required for Next Gen, which accepts the video and source code instead
 - [ ] RevenueCat: finish the dashboard steps in `docs/REVENUECAT_SETUP.md`, then make one sandbox purchase of Chapter Plus on the live site and show it in the video.
 
 ## Title
@@ -70,7 +74,7 @@ Native iOS and Android builds, more questions at the Advanced level, and teacher
 
 ### Built with
 
-react, typescript, vite, supabase, postgresql, deno, revenuecat, playwright, vitest
+react, typescript, vite, supabase, postgresql, deno, revenuecat, groq, playwright, vitest
 
 ## Demo video script (about 1 minute 50 seconds)
 

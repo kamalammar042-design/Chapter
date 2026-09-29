@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { topicMastery, band, weakTopics, summarizeSubject, accuracy } from '@/lib/mastery';
 import { currentStreak, streakAtRisk } from '@/lib/streak';
-import { addDays, daysBetween, todayIn, weekStart, dayRange } from '@/lib/dates';
+import { addDays, daysBetween, formatMinutes, todayIn, weekStart, dayRange } from '@/lib/dates';
 import { goalProgress } from '@/lib/goals';
 import { buildWeeklyReport } from '@/lib/reports';
 import { leagueFor, xpFor } from '@/lib/league';
@@ -229,5 +229,15 @@ describe('achievements', () => {
     expect(byId.month.unlocked).toBe(false);
     expect(byId.secure_1.unlocked).toBe(true);
     expect(byId.paper_1.current).toBe(0);
+  });
+});
+
+describe('formatMinutes', () => {
+  it('never shows real practice as zero minutes', () => {
+    expect(formatMinutes(0)).toBe('0 min');
+    expect(formatMinutes(20)).toBe('<1 min');
+    expect(formatMinutes(90)).toBe('2 min');
+    expect(formatMinutes(3900)).toBe('1 h 5 min');
+    expect(formatMinutes(7200)).toBe('2 h');
   });
 });
