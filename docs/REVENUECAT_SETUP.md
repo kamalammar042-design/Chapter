@@ -34,6 +34,10 @@ The database (migration 020) and the two Edge Functions (`revenuecat-webhook`, `
 - **Environment**: both sandbox and production
 - Save, then use **Send test event**. It should return 200.
 
+## Test Store keys
+
+A public key starting with `test_` is a **Test Store** key: RevenueCat simulates the checkout (buttons *Test valid purchase*, *Test failed purchase*, *Cancel*) and nothing is charged. Chapter's Plus card explains this automatically. The products and the **current** offering must be set up for the Test Store app, or `getOfferings()` returns nothing and the card says Plus is not available. A key starting with `rcb_sb_` is a Web Billing sandbox key (Stripe test cards); `rcb_` without `sb` takes real payments.
+
 ## How it works
 
 1. The web app configures RevenueCat with the student's Supabase user id, so a purchase belongs to that account.

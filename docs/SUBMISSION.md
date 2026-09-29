@@ -12,7 +12,7 @@ Everything needed for the Devpost form, ready to paste. Deadline: **30 September
 - [ ] Text description (below)
 - [x] **App icon 1024 × 1024**: `submission/icon-1024.png` (regenerate with `npm run icons`)
 - [x] **Screenshots 1179 × 2556, no device frame**: `submission/screenshots/` (10 screens captured from the live site by a real account that practised and was then deleted; regenerate with `npx playwright test --config playwright.store.config.ts` and `LIVE_URL` set)
-- [ ] **Judge access to premium**: Chapter Plus runs in RevenueCat's sandbox, so judges unlock it with test card `4242 4242 4242 4242` at no cost (the Plus card says so). Put this in the Devpost "testing instructions" field
+- [ ] **Judge access to premium**: Chapter Plus runs on RevenueCat's Test Store, so judges unlock it at no cost: Settings → Usage & Plus → Get Plus → **Test valid purchase** (the Plus card says so). Put this in the Devpost "testing instructions" field. (With a Web Billing sandbox key instead, the card tells them to use `4242 4242 4242 4242`.)
 - [ ] **Store listing URL**: not required for Next Gen, which accepts the video and source code instead
 - [ ] RevenueCat: finish the dashboard steps in `docs/REVENUECAT_SETUP.md`, then make one sandbox purchase of Chapter Plus on the live site and show it in the video.
 
