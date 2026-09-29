@@ -47,8 +47,12 @@ export default function Home() {
   const tz = p?.timezone ?? 'UTC';
   const today = todayIn(tz);
   const subjectKeys = useMemo(() => (subjects.data ?? []).map((s) => s.subject_key), [subjects.data]);
-  const weak = useMemo(() => weakestSkills(mastery.data ?? [], 3), [mastery.data]);
   const openMisconceptions = useMemo(() => (misconceptions.data ?? []).filter((m) => !m.resolved_at && m.misconception).slice(0, 2), [misconceptions.data]);
+  // a skill already listed for its recurring mistake is not listed again as weak
+  const weak = useMemo(() => {
+    const shown = new Set(openMisconceptions.map((m) => m.misconception!.skill_id));
+    return weakestSkills(mastery.data ?? [], 6).filter((w) => !shown.has(w.skill_id)).slice(0, 3);
+  }, [mastery.data, openMisconceptions]);
   const todayActivity = activity.data?.find((a) => a.day === today);
   const questionsToday = todayActivity?.questions ?? 0;
   const dueCards = (decks.data ?? []).reduce((s, d) => s + d.due, 0);
