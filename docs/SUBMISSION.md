@@ -6,9 +6,9 @@ Everything needed for the Devpost form, ready to paste. Deadline: **30 September
 
 - [ ] Devpost account uses your **student email** (Next Gen eligibility is checked against academic emails)
 - [ ] Under 18? A parent or guardian completes the **consent form** before the deadline
-- [ ] **Public GitHub repository**, with the MIT licence showing in the repo's About panel (GitHub detects `LICENSE` automatically)
+- [x] **Public GitHub repository** (https://github.com/kamalammar042-design/Chapter), with the MIT licence showing in the repo's About panel (GitHub detects `LICENSE` automatically)
 - [ ] **Demo video under 2 minutes** (script below), uploaded to YouTube or Vimeo as public or unlisted
-- [ ] **Try-it link**: the deployed app (Vercel or Netlify) connected to the live Supabase project
+- [x] **Try-it link**: https://chapter-sepia-omega.vercel.app (Vercel, connected to the live Supabase project)
 - [ ] Text description (below)
 - [ ] Payments: the official rules say entries must use the RevenueCat SDK for at least one in-app or web purchase, and one judging criterion is RevenueCat monetization. Chapter is deliberately free with no purchase flow, so it may not meet that requirement. Read the rules at https://revenuecat-shipaton-2026.devpost.com/rules before submitting.
 

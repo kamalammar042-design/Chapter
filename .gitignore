@@ -16,3 +16,5 @@ demo-video
 supabase/.access-token
 dist-live
 test-results-live
+
+.vercel

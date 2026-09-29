@@ -4,7 +4,7 @@
 
 An adaptive study app for IGCSE and Digital SAT students. It finds your weak skills, recognises the misconception behind each wrong answer, explains that idea, serves the right next question, and brings the skill back days later to check you really learned it. Free to use.
 
-- **Try it:** _add your deployed link here_
+- **Try it:** https://chapter-sepia-omega.vercel.app (free; sign up with any email, no confirmation needed)
 - **Demo video:** _add the video link here_
 
 ## What makes it different
