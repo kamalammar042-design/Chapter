@@ -1,0 +1,154 @@
+/* ============================================================
+   Chapter design tokens
+   ------------------------------------------------------------
+   Neutral, slightly cool dark surfaces carry the interface; violet is an
+   accent reserved for primary actions, focus, selection and progress.
+   Semantic colours (success / warning / danger) are used for meaning only.
+   Contrast: text on surface ≥ 12:1, text-2 ≥ 7:1, text-3 ≥ 4.5:1 in both
+   themes (checked in tests/unit/contrast.test.ts).
+   ============================================================ */
+
+:root,
+:root[data-theme='dark'] {
+  color-scheme: dark;
+
+  --bg: #08080c;
+  --bg-sidebar: #0b0b11;
+  --surface: #111118;
+  --surface-2: #16161f;
+  --surface-3: #1d1d28;
+  --surface-inverse: #f4f4f8;
+  --overlay: rgb(3 3 6 / 0.72);
+
+  --border: rgb(255 255 255 / 0.07);
+  --border-strong: rgb(255 255 255 / 0.13);
+
+  --text: #f3f3f7;
+  --text-2: #b0b0c3;
+  --text-3: #83839a;
+  --text-inverse: #0e0e14;
+
+  --primary: #7c3aed;
+  --primary-hover: #8b5cf6;
+  --primary-press: #6d28d9;
+  --primary-soft: rgb(124 58 237 / 0.16);
+  --primary-soft-2: rgb(124 58 237 / 0.26);
+  --primary-text: #b69cfd;
+  --on-primary: #ffffff;
+  --ring: rgb(167 139 250 / 0.7);
+
+  --success: #34d399;
+  --success-soft: rgb(52 211 153 / 0.14);
+  --warning: #fbbf24;
+  --warning-soft: rgb(251 191 36 / 0.14);
+  --danger: #f87171;
+  --danger-soft: rgb(248 113 113 / 0.14);
+  --info: #60a5fa;
+  --info-soft: rgb(96 165 250 / 0.14);
+
+  --track: rgb(255 255 255 / 0.08);
+  --skeleton-a: rgb(255 255 255 / 0.04);
+  --skeleton-b: rgb(255 255 255 / 0.09);
+
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.4);
+  --shadow-md: 0 8px 24px -8px rgb(0 0 0 / 0.6), 0 2px 6px -2px rgb(0 0 0 / 0.4);
+  --shadow-lg: 0 24px 64px -16px rgb(0 0 0 / 0.75), 0 4px 16px -4px rgb(0 0 0 / 0.5);
+
+  /* the one decorative gradient: a faint violet glow at the top of the app */
+  --glow: radial-gradient(1200px 420px at 18% -12%, rgb(124 58 237 / 0.13), transparent 70%);
+}
+
+:root[data-theme='light'] {
+  color-scheme: light;
+
+  --bg: #f6f6f9;
+  --bg-sidebar: #fbfbfd;
+  --surface: #ffffff;
+  --surface-2: #f3f3f7;
+  --surface-3: #eaeaf0;
+  --surface-inverse: #14141c;
+  --overlay: rgb(20 20 30 / 0.45);
+
+  --border: rgb(16 16 32 / 0.08);
+  --border-strong: rgb(16 16 32 / 0.15);
+
+  --text: #15151e;
+  --text-2: #4d4d62;
+  --text-3: #6a6a80;
+  --text-inverse: #ffffff;
+
+  --primary: #6d28d9;
+  --primary-hover: #7c3aed;
+  --primary-press: #5b21b6;
+  --primary-soft: rgb(109 40 217 / 0.09);
+  --primary-soft-2: rgb(109 40 217 / 0.16);
+  --primary-text: #5b21b6;
+  --on-primary: #ffffff;
+  --ring: rgb(109 40 217 / 0.55);
+
+  --success: #047857;
+  --success-soft: rgb(4 120 87 / 0.1);
+  --warning: #b45309;
+  --warning-soft: rgb(180 83 9 / 0.1);
+  --danger: #b91c1c;
+  --danger-soft: rgb(185 28 28 / 0.08);
+  --info: #1d4ed8;
+  --info-soft: rgb(29 78 216 / 0.08);
+
+  --track: rgb(16 16 32 / 0.08);
+  --skeleton-a: rgb(16 16 32 / 0.04);
+  --skeleton-b: rgb(16 16 32 / 0.09);
+
+  --shadow-sm: 0 1px 2px rgb(16 16 32 / 0.06);
+  --shadow-md: 0 8px 24px -10px rgb(16 16 32 / 0.16), 0 2px 6px -2px rgb(16 16 32 / 0.06);
+  --shadow-lg: 0 24px 60px -20px rgb(16 16 32 / 0.25), 0 4px 16px -6px rgb(16 16 32 / 0.08);
+
+  --glow: radial-gradient(1200px 420px at 18% -12%, rgb(124 58 237 / 0.07), transparent 70%);
+}
+
+:root {
+  /* type */
+  --font-sans: 'Inter Variable', 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-serif: 'Instrument Serif', Georgia, 'Times New Roman', serif;
+  --font-mono: ui-monospace, 'SF Mono', 'Cascadia Code', Menlo, monospace;
+
+  --text-xs: 0.75rem;    /* 12 */
+  --text-sm: 0.8125rem;  /* 13 */
+  --text-base: 0.9375rem;/* 15 */
+  --text-md: 1rem;       /* 16 */
+  --text-lg: 1.125rem;   /* 18 */
+  --text-xl: 1.375rem;   /* 22 */
+  --text-2xl: 1.75rem;   /* 28 */
+  --text-3xl: 2.25rem;   /* 36 */
+  --text-4xl: 3rem;      /* 48 */
+
+  /* spacing (4px grid) */
+  --sp-1: 4px;  --sp-2: 8px;  --sp-3: 12px; --sp-4: 16px;
+  --sp-5: 20px; --sp-6: 24px; --sp-8: 32px; --sp-10: 40px;
+  --sp-12: 48px; --sp-16: 64px;
+
+  /* radius */
+  --r-xs: 6px;
+  --r-sm: 8px;
+  --r-md: 10px;
+  --r-lg: 14px;
+  --r-xl: 18px;
+  --r-full: 999px;
+
+  /* motion: short and quiet */
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --dur-1: 120ms;
+  --dur-2: 180ms;
+  --dur-3: 260ms;
+
+  /* layout */
+  --sidebar-w: 248px;
+  --content-max: 1120px;
+  --bottom-nav-h: 64px;
+  --topbar-h: 56px;
+  --tap: 44px;
+
+  --z-nav: 30;
+  --z-overlay: 60;
+  --z-toast: 80;
+}

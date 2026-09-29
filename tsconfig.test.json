@@ -1,0 +1,16 @@
+{
+  "extends": "./tsconfig.app.json",
+  "compilerOptions": {
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.test.tsbuildinfo",
+    "types": ["vite/client", "vitest/globals", "@testing-library/jest-dom", "node"]
+  },
+  "include": ["src", "tests/unit"],
+  "files": [
+    "supabase/functions/_shared/http.ts",
+    "supabase/functions/_shared/images.ts",
+    "supabase/functions/_shared/prompts.ts",
+    "supabase/functions/_shared/generate.ts",
+    "supabase/functions/_shared/tutor-request.ts",
+    "supabase/functions/_shared/ai/provider.ts"
+  ]
+}

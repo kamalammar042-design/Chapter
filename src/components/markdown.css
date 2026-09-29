@@ -1,0 +1,20 @@
+.md { font-size: var(--text-base); line-height: 1.65; overflow-wrap: anywhere; }
+.md > * + * { margin-top: 0.7em; }
+.md h1, .md h2, .md h3, .md h4 { font-size: var(--text-md); font-weight: 650; margin-top: 1.1em; }
+.md ul, .md ol { padding-left: 1.3em; }
+.md li + li { margin-top: 0.25em; }
+.md strong { font-weight: 650; }
+.md a { color: var(--primary-text); text-decoration: underline; text-underline-offset: 2px; }
+.md code {
+  font-family: var(--font-mono); font-size: 0.88em; padding: 0.1em 0.35em;
+  border-radius: 5px; background: var(--surface-3);
+}
+.md pre { overflow-x: auto; padding: var(--sp-3) var(--sp-4); border-radius: var(--r-md); background: var(--surface-3); }
+.md pre code { background: none; padding: 0; }
+.md blockquote { margin: 0; padding-left: var(--sp-3); border-left: 3px solid var(--primary); color: var(--text-2); }
+.md table { border-collapse: collapse; width: 100%; font-size: var(--text-sm); display: block; overflow-x: auto; }
+.md th, .md td { border: 1px solid var(--border-strong); padding: 6px 10px; text-align: left; }
+.md th { background: var(--surface-2); font-weight: 600; }
+.md hr { margin: 1em 0; }
+.md .katex-display { overflow-x: auto; overflow-y: hidden; padding: 4px 0; }
+.md .katex { font-size: 1.05em; }

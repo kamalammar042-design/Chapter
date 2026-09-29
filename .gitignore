@@ -1,0 +1,14 @@
+node_modules
+dist
+.env
+.env.local
+.env.*.local
+supabase/functions/.env
+supabase/.temp
+supabase/.branches
+playwright-report
+test-results
+.DS_Store
+*.log
+.vercel
+.netlify

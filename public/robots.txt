@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /$
+Allow: /privacy
+Allow: /terms
+Allow: /signup
+Allow: /signin
+Disallow: /
