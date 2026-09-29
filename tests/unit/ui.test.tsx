@@ -197,6 +197,19 @@ describe('Practice session', () => {
     expect(screen.getByRole('button', { name: 'Turn into flashcards' })).toBeInTheDocument();
   });
 
+  it('labels a skill practised for the first time as new instead of showing a gain', async () => {
+    recordImpl = async () => ({ status: 'saved', result: { duplicate: false, correct: false, correct_index: 2, xp: 0, skill_id: 'igcse.physics/electricity/resistance', mastery_before: 0, mastery_after: 5 } });
+    const user = userEvent.setup();
+    await renderPractice();
+    for (let i = 0; i < 2; i++) {
+      await user.click(screen.getAllByRole('button', { name: /Volt|200 m\/s|12.5 m\/s/ })[0]);
+      await user.click(await screen.findByRole('button', { name: /Next question|See results/ }));
+    }
+    expect(await screen.findByText('Skills practised')).toBeInTheDocument();
+    expect(screen.getAllByLabelText('New skill, mastery 5%').length).toBeGreaterThan(0);
+    expect(screen.queryByLabelText(/Mastery 0% to 5%/)).not.toBeInTheDocument();
+  });
+
   it('shows a hint on request and records that a hint was used', async () => {
     const user = userEvent.setup();
     await renderPractice();

@@ -461,7 +461,8 @@ function ReportDialog({ open, questionId, onClose }: { open: boolean; questionId
   );
 }
 
-interface SkillChange { skillId: string; name: string; before: number; after: number; total: number; correct: number }
+/** isNew: the student had no record for this skill before the session, so there is no "before" to compare with */
+interface SkillChange { skillId: string; name: string; before: number; after: number; total: number; correct: number; isNew: boolean }
 
 function Summary({ answers, title, params, queued, guided, mastery, onAgain }: {
   answers: Answer[]; title: string; params: PracticeParams; queued: boolean; guided: GuidedState | null;
@@ -487,6 +488,7 @@ function Summary({ answers, title, params, queued, guided, mastery, onAgain }: {
       const e = m.get(id) ?? {
         skillId: id, name: skillById(id)?.name ?? id.split('/')[2],
         before: a.result?.mastery_before ?? mastery.get(id)?.mastery ?? 0, after: 0, total: 0, correct: 0,
+        isNew: !mastery.get(id)?.attempts && (a.result?.mastery_before ?? 0) === 0,
       };
       e.total++;
       if (a.correct) e.correct++;
@@ -561,16 +563,16 @@ function Summary({ answers, title, params, queued, guided, mastery, onAgain }: {
           <h2 className="card__title mb-4">Skills practised</h2>
           <ul className="stack-sm" style={{ listStyle: 'none' }}>
             {skills.map((s) => {
-              const delta = s.after - s.before;
+              const delta = s.isNew ? 0 : s.after - s.before;
               return (
                 <li key={s.skillId} className="row row--between text-sm">
                   <span className="truncate">{s.name}</span>
                   <span className="row-sm shrink-0">
                     <span className="num text-2">{s.correct}/{s.total}</span>
                     <span className={`num mastery-delta ${delta > 0 ? 'text-success' : delta < 0 ? 'text-danger' : 'text-3'}`}
-                      aria-label={`Mastery ${s.before}% to ${s.after}%`}>
+                      aria-label={s.isNew ? `New skill, mastery ${s.after}%` : `Mastery ${s.before}% to ${s.after}%`}>
                       {delta > 0 ? <TrendingUp size={14} aria-hidden="true" /> : delta < 0 ? <TrendingDown size={14} aria-hidden="true" /> : null}
-                      {s.before}% → {s.after}%
+                      {s.isNew ? <>New · {s.after}%</> : <>{s.before}% → {s.after}%</>}
                     </span>
                   </span>
                 </li>
