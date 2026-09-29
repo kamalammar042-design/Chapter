@@ -19,3 +19,6 @@ test-results-live
 
 .vercel
 test-results-store
+
+.env*
+!.env.production
