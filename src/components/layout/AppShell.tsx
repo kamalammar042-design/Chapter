@@ -12,6 +12,7 @@ import { initials } from '@/lib/format';
 import { useUser } from '@/features/auth/AuthProvider';
 import { flushOutbox } from '@/data/attempts';
 import { useIsAdmin } from '@/data/admin';
+import { useSubscription } from '@/data/social';
 import { env } from '@/lib/env';
 
 interface NavItem { to: string; label: string; icon: typeof Home; end?: boolean }
@@ -61,6 +62,7 @@ export function AppShell() {
   const location = useLocation();
   const isParent = profile?.role === 'parent';
   const isAdmin = useIsAdmin().data === true;
+  const isPlus = useSubscription().data?.plus === true;
   const streak = profile ? currentStreak(profile) : 0;
   const name = profile?.display_name || profile?.username || 'Student';
   // focus mode: no bottom navigation during a practice or review session
@@ -106,7 +108,10 @@ export function AppShell() {
           <NavLink to="/settings/account" className="sidebar-user" aria-label={`Account: ${name}`}>
             <span className="avatar avatar--sm">{initials(name)}</span>
             <span className="grow" style={{ minWidth: 0 }}>
-              <span className="sidebar-user__name" style={{ display: 'block' }}>{name}</span>
+              <span className="sidebar-user__name row-sm" style={{ display: 'flex' }}>
+                <span className="truncate">{name}</span>
+                {isPlus && <span className="badge badge--primary" style={{ padding: '0 6px', fontSize: 10 }}>Plus</span>}
+              </span>
               {!isParent && (
                 <span className="sidebar-user__meta row-sm" style={{ gap: 4 }}>
                   <Flame size={12} aria-hidden="true" /> {streak}-day streak

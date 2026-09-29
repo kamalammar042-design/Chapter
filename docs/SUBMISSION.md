@@ -10,7 +10,7 @@ Everything needed for the Devpost form, ready to paste. Deadline: **30 September
 - [ ] **Demo video under 2 minutes** (script below), uploaded to YouTube or Vimeo as public or unlisted
 - [x] **Try-it link**: https://chapter-sepia-omega.vercel.app (Vercel, connected to the live Supabase project)
 - [ ] Text description (below)
-- [ ] Payments: the official rules say entries must use the RevenueCat SDK for at least one in-app or web purchase, and one judging criterion is RevenueCat monetization. Chapter is deliberately free with no purchase flow, so it may not meet that requirement. Read the rules at https://revenuecat-shipaton-2026.devpost.com/rules before submitting.
+- [ ] RevenueCat: finish the dashboard steps in `docs/REVENUECAT_SETUP.md`, then make one sandbox purchase of Chapter Plus on the live site and show it in the video.
 
 ## Title
 
@@ -36,7 +36,7 @@ Revision apps for IGCSE and SAT mostly count right and wrong answers. But a wron
 - **An exam plan that adapts.** Built from exam dates and weak skills and rebuilt every day, so a missed day never creates a backlog.
 - **Honest content.** Every question records its source and licence. AI-generated questions are solved independently by a second model that never sees the answer key, and only published if every check passes. Past papers link to Cambridge and the College Board rather than being copied.
 - **Parents.** A student can share progress with a parent, who sees skills and activity but never tutor chats, notes or flashcards.
-- **Free**, with fair-use limits on the AI features.
+- **Free for every student**, with fair-use limits on the AI features, plus an optional **Chapter Plus** subscription (RevenueCat Web Billing) that triples the AI allowances and funds Chapter's AI costs.
 
 ### How I built it
 
@@ -45,6 +45,14 @@ Revision apps for IGCSE and SAT mostly count right and wrong answers. But a wron
 - Anthropic Claude through a small provider layer with per-task model routing (a faster model for everyday tutoring, a stronger one for checking work and verifying generated questions) and per-request cost tracking.
 - 51 procedural question families that re-check their own answers by an independent method, plus a seed bank of about 400 questions classified to skills.
 - Tests: about 150 unit tests, 90 database tests that run the real migrations on Postgres (PGlite), and 160 browser tests at six screen sizes, including an automated accessibility audit.
+
+### Monetization with RevenueCat
+
+Chapter's learning features are free, because the students who most need help often can't pay. What costs money is AI, so that's what Plus sells: **Chapter Plus** triples the monthly AI tutor and generation allowances, and supporters get a Plus badge.
+
+- Purchases use the **RevenueCat Web SDK** (Web Billing). The SDK is configured with the student's Supabase user id, so the purchase is tied to their account.
+- Access is **verified on the server**: after checkout the app calls a Supabase Edge Function that checks the subscriber with RevenueCat's REST API, and a **RevenueCat webhook** records renewals, cancellations and expirations. The client can never grant itself Plus.
+- The database enforces the tripled allowance. Late or repeated webhook events are ignored, and a cancelled subscription lasts until the paid period ends.
 
 ### Challenges
 
@@ -62,7 +70,7 @@ Native iOS and Android builds, more questions at the Advanced level, and teacher
 
 ### Built with
 
-react, typescript, vite, supabase, postgresql, deno, anthropic-claude, playwright, vitest
+react, typescript, vite, supabase, postgresql, deno, revenuecat, playwright, vitest
 
 ## Demo video script (about 1 minute 50 seconds)
 

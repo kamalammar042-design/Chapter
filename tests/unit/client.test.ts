@@ -255,3 +255,16 @@ describe('design token contrast (WCAG 2.1)', () => {
     });
   }
 });
+
+describe('hosting configs', () => {
+  it('ship the same security headers on Vercel, Netlify and other static hosts', () => {
+    const netlify = /Content-Security-Policy = "([^"]+)"/.exec(readFileSync('netlify.toml', 'utf8'))![1];
+    const vercel = (JSON.parse(readFileSync('vercel.json', 'utf8')) as { headers: Array<{ headers: Array<{ key: string; value: string }> }> })
+      .headers[0].headers.find((h) => h.key === 'Content-Security-Policy')!.value;
+    const other = /Content-Security-Policy: ([^\n]+)/.exec(readFileSync('public/_headers', 'utf8'))![1].trim();
+    expect(vercel).toBe(netlify);
+    expect(other).toBe(netlify);
+    expect(netlify).toContain("script-src 'self' https://js.stripe.com");
+    expect(netlify).not.toMatch(/'unsafe-eval'|script-src[^;]*'unsafe-inline'/);
+  });
+});

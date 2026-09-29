@@ -87,7 +87,7 @@ describe('Phase 2 migrations (013–019)', () => {
       `select (select count(*)::int from public.questions) as q, (select count(*)::int from public.skills) as s,
               (select count(*)::int from public.misconceptions) as m, (select count(*)::int from public.resources) as r`);
     const before = await count();
-    await db.migrate(13, 19);
+    await db.migrate(13, 20);
     expect(await count()).toEqual(before);
   });
 

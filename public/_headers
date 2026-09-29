@@ -1,12 +1,12 @@
 # Security headers for hosts that read a _headers file (Cloudflare Pages, Netlify).
 # Vercel uses vercel.json; Netlify also reads netlify.toml.
 /*
-  Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://*.supabase.co; font-src 'self' data:; connect-src 'self' https://*.supabase.co wss://*.supabase.co; manifest-src 'self'; worker-src 'self'; frame-src 'none'; frame-ancestors 'none'; object-src 'none'; base-uri 'self'; form-action 'self'
+  Content-Security-Policy: default-src 'self'; script-src 'self' https://js.stripe.com https://*.js.stripe.com https://sdk.revenuecat-static.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://*.supabase.co https://*.stripe.com https://*.revenuecat-static.com https://da08ctfrofx1b.cloudfront.net; font-src 'self' data:; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.revenuecat.com https://*.revenuecat.com https://*.revenuecat-static.com https://api.stripe.com https://m.stripe.network; manifest-src 'self'; worker-src 'self'; frame-src https://js.stripe.com https://*.js.stripe.com https://hooks.stripe.com; frame-ancestors 'none'; object-src 'none'; base-uri 'self'; form-action 'self'
   Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
   X-Frame-Options: DENY
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
-  Permissions-Policy: camera=(self), microphone=(), geolocation=(), payment=(), usb=()
+  Permissions-Policy: camera=(self), microphone=(), geolocation=(), payment=(self "https://js.stripe.com"), usb=()
   Cross-Origin-Opener-Policy: same-origin
 
 /assets/*

@@ -4,6 +4,7 @@ import { formatDay } from '@/lib/dates';
 import { Card, CardHeader } from '@/components/ui/Card';
 import { ProgressBar } from '@/components/ui/Progress';
 import { ErrorState, Skeleton } from '@/components/ui/States';
+import { PlusCard } from './PlusCard';
 
 /**
  * Chapter is free. The only limits are monthly fair-use allowances on the AI
@@ -20,7 +21,7 @@ export function UsageSettings() {
   return (
     <div className="stack-lg">
       <Card>
-        <CardHeader title="This month" subtitle="Chapter is free. AI features have a monthly fair-use allowance so they stay available for everyone." />
+        <CardHeader title="This month" subtitle="Chapter is free. AI features have a monthly fair-use allowance so they stay available for everyone." action={tutor.data?.plus ? <span className="badge badge--primary">Plus: 3× allowance</span> : undefined} />
         {loading ? <Skeleton height={80} /> : error ? <ErrorState compact error={error} onRetry={() => { void tutor.refetch(); void generate.refetch(); }} /> : (
           <div className="stack">
             {tutor.data && tutor.data.cap > 0 && (
@@ -46,6 +47,7 @@ export function UsageSettings() {
           </div>
         )}
       </Card>
+      <PlusCard />
     </div>
   );
 }

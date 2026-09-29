@@ -28,6 +28,7 @@ function Privacy() {
         <li><strong>Account:</strong> your email address, first name, optional username, time zone and study preferences.</li>
         <li><strong>Study activity:</strong> the questions you answer (which option you chose, whether it was right, how long it took, whether you used a hint, and for wrong answers the question text), practice sessions, flashcards, notes, goals, study-time preferences and past-paper scores you log.</li>
         <li><strong>Learning model:</strong> a mastery estimate and review schedule for each skill you practise, and recurring mistakes detected from the wrong options you choose. These are calculated from your answers.</li>
+        <li><strong>Chapter Plus:</strong> if you subscribe, RevenueCat and Stripe process the payment. Chapter receives whether your subscription is active and when it renews, never your card details.</li>
         <li><strong>Reports and errors:</strong> problems you report about a question, and technical error reports from the app. Error reports contain what failed and on which page, with personal details removed; your account is recorded only as a one-way code.</li>
         <li><strong>Tutor conversations:</strong> messages you send to the AI tutor, images you upload, and the tutor's replies.</li>
         <li><strong>Tutor memory:</strong> short academic notes the tutor keeps to personalise help (for example "finds rearranging equations hard"). You can see and delete every item in Settings → AI tutor.</li>
@@ -62,7 +63,8 @@ function Terms() {
       <h2>AI tutor</h2>
       <p>The tutor is an AI and can make mistakes. Check important facts against your textbook, teacher or official syllabus. Chapter is an independent study tool and is not affiliated with Cambridge International or the College Board.</p>
       <h2>Cost</h2>
-      <p>Chapter is free. So that the AI features stay available for everyone, each account has a monthly fair-use allowance of tutor messages and AI-generated questions and flashcards, shown in Settings → Usage.</p>
+      <p>Chapter is free. So that the AI features stay available for everyone, each account has a monthly fair-use allowance of tutor messages and AI-generated questions and flashcards, shown in Settings → Usage &amp; Plus.</p>
+      <p>Chapter Plus is an optional monthly subscription that triples those AI allowances. It is sold and processed by RevenueCat and Stripe. You can cancel at any time from the link in Settings → Usage &amp; Plus; Plus then lasts until the end of the period you paid for. Everything else in Chapter stays free whether or not you subscribe.</p>
       <h2>Your content</h2>
       <p>You own the notes and material you create. You give us permission to store and process it to provide the service. Only upload material you are allowed to use; anything generated from your uploads stays private to you.</p>
       <h2>Learning content</h2>

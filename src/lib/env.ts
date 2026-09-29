@@ -7,6 +7,9 @@ export const env = {
   supabaseUrl: url.replace(/\/$/, ''),
   supabaseAnonKey: anonKey,
   isConfigured: /^https:\/\/.+/.test(url) && anonKey.length > 20,
+  /** RevenueCat Web Billing public API key; Chapter Plus is offered only when set */
+  revenuecatKey: ((import.meta.env.VITE_REVENUECAT_API_KEY as string | undefined) ?? '').trim(),
+  revenuecatEntitlement: ((import.meta.env.VITE_REVENUECAT_ENTITLEMENT as string | undefined) ?? 'plus').trim() || 'plus',
   /** development | preview | production */
   appEnv: ((import.meta.env.VITE_APP_ENV as string | undefined) ?? (import.meta.env.PROD ? 'production' : 'development')),
 } as const;

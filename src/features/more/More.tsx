@@ -13,7 +13,7 @@ const ITEMS = [
   { to: '/goals', label: 'Goals', desc: 'Weekly and exam targets', icon: Flag },
   { to: '/reports', label: 'Weekly report', desc: 'Your week in numbers', icon: BookOpen },
   { to: '/leagues', label: 'Leagues', desc: 'XP, leaderboard, achievements', icon: Trophy },
-  { to: '/settings/usage', label: 'Usage', desc: 'Your AI allowance this month', icon: Gauge },
+  { to: '/settings/usage', label: 'Usage & Plus', desc: 'AI allowance and Chapter Plus', icon: Gauge },
   { to: '/settings', label: 'Settings', desc: 'Account, subjects, tutor, privacy', icon: Settings },
 ];
 

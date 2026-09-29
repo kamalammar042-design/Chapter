@@ -185,6 +185,9 @@ export interface Subscription {
   tier: 'free' | 'pro' | 'parent';
   /** false while no payment system is connected: every feature is free */
   paywall_enabled?: boolean;
+  /** active Chapter Plus (RevenueCat), verified on the server */
+  plus?: boolean;
+  plus_expires_at?: string | null;
   founding_member: boolean;
   active: Array<{ tier: string; source: string; expires_at: string | null }>;
 }

@@ -631,3 +631,31 @@ describe('free access until payments are connected (019)', () => {
     }
   });
 });
+
+describe('Chapter Plus (020)', () => {
+  it('triples AI allowances for an active RevenueCat entitlement, which students cannot create themselves', async () => {
+    const u = await db.createUser();
+    await db.as(u);
+    const before = await db.one<{ a: { cap: number; plus: boolean } }>(`select public.my_ai_allowance('tutor_message') as a`);
+    expect(before.a.plus).toBe(false);
+    expect(await db.error(`insert into public.entitlements (user_id, tier, source, external_ref, expires_at) values ($1, 'pro', 'revenuecat', 'rc:x', now() + interval '30 days')`, [u.id]))
+      .toMatch(/permission denied|row-level security/);
+    expect(await db.error('select * from public.revenuecat_events')).toMatch(/permission denied/);
+
+    // what the webhook / sync function does with the service role
+    await db.asService();
+    await db.pg.query(`insert into public.entitlements (user_id, tier, source, external_ref, expires_at, source_event_at) values ($1, 'pro', 'revenuecat', $2, now() + interval '30 days', now())`, [u.id, `rc:${u.id}`]);
+    await db.as(u);
+    const after = await db.one<{ a: { cap: number; plus: boolean } }>(`select public.my_ai_allowance('tutor_message') as a`);
+    expect(after.a.plus).toBe(true);
+    expect(after.a.cap).toBe(900 * 3); // paid-level base (as in free-access mode), tripled
+    const sub = await db.one<{ s: { plus: boolean } }>('select public.my_subscription() as s');
+    expect(sub.s.plus).toBe(true);
+
+    // expired or revoked Plus no longer counts
+    await db.asService();
+    await db.pg.query(`update public.entitlements set revoked_at = now() where user_id = $1 and source = 'revenuecat'`, [u.id]);
+    await db.as(u);
+    expect((await db.one<{ a: { plus: boolean } }>(`select public.my_ai_allowance('tutor_message') as a`)).a.plus).toBe(false);
+  });
+});

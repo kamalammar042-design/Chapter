@@ -196,6 +196,8 @@ export interface AiAllowance {
   allowed: boolean;
   tier: Tier;
   cap: number;
+  /** Chapter Plus (RevenueCat) triples the allowance */
+  plus?: boolean;
   used: number;
   remaining: number;
   reason: string | null;

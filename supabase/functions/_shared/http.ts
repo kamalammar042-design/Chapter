@@ -42,6 +42,7 @@ export type ErrorCode =
   | 'ai_refused'
   | 'ai_bad_response'
   | 'conflict'
+  | 'not_configured'
   | 'server_error';
 
 export function jsonResponse(body: unknown, status: number, headers: Record<string, string>): Response {

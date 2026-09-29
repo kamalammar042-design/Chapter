@@ -14,7 +14,7 @@ const STUDENT_SECTIONS = [
   { id: 'account', label: 'Account' },
   { id: 'study', label: 'Study' },
   { id: 'tutor', label: 'AI tutor' },
-  { id: 'usage', label: 'Usage' },
+  { id: 'usage', label: 'Usage & Plus' },
   { id: 'parents', label: 'Parent access' },
   { id: 'privacy', label: 'Privacy' },
   { id: 'appearance', label: 'Appearance' },

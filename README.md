@@ -19,6 +19,7 @@ An adaptive study app for IGCSE and Digital SAT students. It finds your weak ski
 | **Exam plan** | Built from exam dates and weak skills and rebuilt daily, so a missed day never piles up. |
 | **Honest content** | Every question has recorded provenance. AI-generated questions are solved independently by a second model before publishing. Past papers link to the official publishers rather than being copied. |
 | **Parents** | A student can share progress with a parent, who never sees tutor chats, notes or flashcards. |
+| **Chapter Plus** | Learning is free for everyone. An optional subscription through **RevenueCat Web Billing** triples the AI allowances; access is verified on the server by a RevenueCat webhook and REST check. See [docs/REVENUECAT_SETUP.md](docs/REVENUECAT_SETUP.md). |
 
 ## How it works
 

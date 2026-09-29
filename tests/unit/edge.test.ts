@@ -14,6 +14,7 @@ import {
   validateDraft, verificationChecks, type DraftQuestion,
 } from '../../supabase/functions/_shared/pipeline';
 import { classifyLink, nextLinkState } from '../../supabase/functions/_shared/links';
+import { accessFromSubscriber, authorizationMatches, decideEvent, isNewer } from '../../supabase/functions/_shared/revenuecat';
 import { parseTutorRequest } from '../../supabase/functions/_shared/tutor-request';
 import { aiErrorToHttp } from '../../supabase/functions/_shared/ai/provider';
 
@@ -369,5 +370,55 @@ describe('tutor request validation', () => {
     expect(parseTutorRequest({ mode: 'scan', images: [{ data: encodeBase64(HTML) }] })).toMatchObject({ ok: false, reason: 'unsupported_type' });
     expect(parseTutorRequest({ mode: 'scan', images: [{ data: encodeBase64(PNG) }] })).toMatchObject({ ok: true });
     expect(parseTutorRequest({ message: 'x', images: [1, 2, 3, 4] })).toMatchObject({ ok: false, field: 'images' });
+  });
+});
+
+describe('RevenueCat (Chapter Plus)', () => {
+  const user = '3f2c1b9a-1d2e-4f5a-8b9c-0d1e2f3a4b5c';
+  const now = Date.parse('2026-09-29T12:00:00Z');
+  const future = Date.parse('2026-10-29T12:00:00Z');
+  const ev = (over: Record<string, unknown>) => ({ id: 'e1', app_user_id: user, entitlement_ids: ['plus'], event_timestamp_ms: now, environment: 'SANDBOX' as const, expiration_at_ms: future, ...over });
+
+  it('grants Plus on purchase and renewal, until the period ends plus a day of grace', () => {
+    for (const type of ['INITIAL_PURCHASE', 'RENEWAL', 'UNCANCELLATION', 'PRODUCT_CHANGE']) {
+      const d = decideEvent(ev({ type }), 'plus', now);
+      expect(d, type).toMatchObject({ kind: 'apply', userId: user, active: true, environment: 'SANDBOX' });
+      if (d.kind === 'apply') expect(d.expiresAt).toBe(new Date(future + 86_400_000).toISOString());
+    }
+  });
+
+  it('keeps access after cancelling until the period ends, and removes it on expiration', () => {
+    expect(decideEvent(ev({ type: 'CANCELLATION' }), 'plus', now)).toMatchObject({ kind: 'apply', active: true });
+    expect(decideEvent(ev({ type: 'BILLING_ISSUE' }), 'plus', now)).toMatchObject({ kind: 'apply', active: true });
+    expect(decideEvent(ev({ type: 'EXPIRATION' }), 'plus', now)).toMatchObject({ kind: 'apply', active: false });
+    expect(decideEvent(ev({ type: 'RENEWAL', expiration_at_ms: now - 3 * 86_400_000 }), 'plus', now)).toMatchObject({ active: false });
+  });
+
+  it('ignores test events, other entitlements, unknown users and irrelevant event types', () => {
+    expect(decideEvent(ev({ type: 'TEST' }), 'plus', now).kind).toBe('ignore');
+    expect(decideEvent(ev({ type: 'INITIAL_PURCHASE', entitlement_ids: ['gold'] }), 'plus', now).kind).toBe('ignore');
+    expect(decideEvent(ev({ type: 'INITIAL_PURCHASE', app_user_id: '$RCAnonymousID:abc', original_app_user_id: 'x', aliases: [] }), 'plus', now).kind).toBe('ignore');
+    expect(decideEvent(ev({ type: 'SUBSCRIBER_ALIAS' }), 'plus', now).kind).toBe('ignore');
+    // an alias that is a Chapter user id is enough
+    expect(decideEvent(ev({ type: 'RENEWAL', app_user_id: '$RCAnonymousID:abc', aliases: [user] }), 'plus', now)).toMatchObject({ userId: user });
+  });
+
+  it('reads access from a subscriber record', () => {
+    expect(accessFromSubscriber({ entitlements: { plus: { expires_date: '2026-10-29T12:00:00Z' } } }, 'plus', now)).toMatchObject({ active: true });
+    expect(accessFromSubscriber({ entitlements: { plus: { expires_date: '2026-09-01T12:00:00Z' } } }, 'plus', now)).toMatchObject({ active: false });
+    expect(accessFromSubscriber({ entitlements: { plus: { expires_date: null } } }, 'plus', now)).toEqual({ active: true, expiresAt: null });
+    expect(accessFromSubscriber({ entitlements: {} }, 'plus', now)).toEqual({ active: false, expiresAt: null });
+    expect(accessFromSubscriber(null, 'plus', now)).toEqual({ active: false, expiresAt: null });
+  });
+
+  it('authenticates webhooks in constant time and orders events', () => {
+    const secret = 'a-long-webhook-secret-123456';
+    expect(authorizationMatches(`Bearer ${secret}`, secret)).toBe(true);
+    expect(authorizationMatches(secret, secret)).toBe(true);
+    expect(authorizationMatches('Bearer wrong', secret)).toBe(false);
+    expect(authorizationMatches(null, secret)).toBe(false);
+    expect(authorizationMatches('Bearer short', 'short')).toBe(false);
+    expect(isNewer('2026-09-29T12:00:00Z', null)).toBe(true);
+    expect(isNewer('2026-09-29T11:00:00Z', '2026-09-29T12:00:00Z')).toBe(false);
   });
 });

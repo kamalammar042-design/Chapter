@@ -27,6 +27,7 @@
   "dependencies": {
     "@fontsource-variable/inter": "^5.2.0",
     "@fontsource/instrument-serif": "^5.2.0",
+    "@revenuecat/purchases-js": "^1.66.0",
     "@supabase/supabase-js": "^2.50.0",
     "@tanstack/react-query": "^5.80.0",
     "katex": "^0.16.22",

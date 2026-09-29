@@ -414,3 +414,8 @@ ol.insights li::before { counter-increment: n; content: counter(n); width: 18px;
 .check-list { list-style: none; display: grid; gap: 4px; padding: 0; margin: 0; font-size: var(--text-sm); }
 .check-list li { display: flex; gap: 6px; align-items: flex-start; }
 .check-list svg { flex-shrink: 0; margin-top: 3px; }
+
+/* ---- Chapter Plus ------------------------------------------------------------ */
+.plus-benefits { list-style: none; display: grid; gap: 6px; padding: 0; margin: 0; font-size: var(--text-sm); }
+.plus-benefits li { display: flex; gap: 8px; align-items: flex-start; }
+.plus-benefits svg { color: var(--success); flex-shrink: 0; margin-top: 3px; }
