@@ -7,6 +7,7 @@ import { ToastProvider } from '@/components/ui/Toast';
 
 const calls: string[] = [];
 let active = false;
+let mode: 'test_store' | 'sandbox' | 'live' = 'sandbox';
 
 vi.mock('@/features/auth/AuthProvider', () => ({
   useUser: () => ({ id: '3f2c1b9a-1d2e-4f5a-8b9c-0d1e2f3a4b5c', email: 's@example.com' }),
@@ -17,7 +18,7 @@ vi.mock('@/lib/revenuecat', () => ({
   plusAvailable: true,
   loadPlus: async () => ({
     status: { active, willRenew: true, expiresAt: active ? new Date('2026-10-29T00:00:00Z') : null, managementURL: active ? 'https://billing.example/manage' : null },
-    offer: active ? null : { pkg: { identifier: '$rc_monthly' }, title: 'Chapter Plus', price: '$3.99', period: 'month', sandbox: true },
+    offer: active ? null : { pkg: { identifier: '$rc_monthly' }, title: 'Chapter Plus', price: '$3.99', period: 'month', mode },
   }),
   buyPlus: async () => { calls.push('purchase'); active = true; return { active: true, willRenew: true, expiresAt: new Date('2026-10-29T00:00:00Z'), managementURL: null }; },
 }));
@@ -28,7 +29,7 @@ function wrap(ui: ReactNode) {
 }
 
 describe('Chapter Plus card', () => {
-  beforeEach(() => { calls.length = 0; active = false; });
+  beforeEach(() => { calls.length = 0; active = false; mode = 'sandbox'; });
 
   it('shows the live price and test-mode card, buys through RevenueCat and verifies on the server', async () => {
     const { PlusCard } = await import('@/features/settings/PlusCard');
@@ -40,6 +41,15 @@ describe('Chapter Plus card', () => {
     await user.click(buy);
     await waitFor(() => expect(calls).toEqual(['purchase', 'revenuecat-sync']));
     expect(await screen.findByText(/You are a Plus supporter/)).toBeInTheDocument();
+  });
+
+  it('explains the simulated checkout with a Test Store key', async () => {
+    mode = 'test_store';
+    const { PlusCard } = await import('@/features/settings/PlusCard');
+    wrap(<PlusCard />);
+    expect(await screen.findByText(/Test Store simulates the purchase/)).toBeInTheDocument();
+    expect(screen.getByText('Test valid purchase')).toBeInTheDocument();
+    expect(screen.queryByText(/4242/)).not.toBeInTheDocument();
   });
 
   it('offers subscription management to an existing supporter', async () => {

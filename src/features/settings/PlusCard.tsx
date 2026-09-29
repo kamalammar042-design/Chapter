@@ -109,8 +109,14 @@ export function PlusCard() {
               <Button icon={<Sparkles />} onClick={buy} loading={busy} style={{ width: 'fit-content' }}>
                 Get Plus · {offer.price}{offer.period ? ` / ${offer.period}` : ''}
               </Button>
-              <p className="text-xs text-3">Payments are handled securely by RevenueCat and Stripe. Cancel any time; Plus lasts until the end of the period you paid for.</p>
-              {offer.sandbox && (
+              {offer.mode === 'test_store' ? (
+                <Alert tone="info" icon={<FlaskConical />}>
+                  Test mode: RevenueCat's Test Store simulates the purchase, so nothing is charged. In the window that opens, choose <strong>Test valid purchase</strong>.
+                </Alert>
+              ) : (
+                <p className="text-xs text-3">Payments are handled securely by RevenueCat and Stripe. Cancel any time; Plus lasts until the end of the period you paid for.</p>
+              )}
+              {offer.mode === 'sandbox' && (
                 <Alert tone="info" icon={<FlaskConical />}>
                   Test mode: no real money is taken. Use card <strong className="num">4242 4242 4242 4242</strong>, any future expiry date and any CVC.
                 </Alert>

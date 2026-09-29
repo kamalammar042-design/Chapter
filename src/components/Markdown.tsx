@@ -7,6 +7,7 @@ import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 import 'katex/dist/katex.min.css';
 import './markdown.css';
+import { normalizeMathDelimiters } from '@/lib/mathDelimiters';
 
 const SAFE_PROTOCOL = /^(https?:|mailto:)/i;
 
@@ -24,7 +25,7 @@ export default function Markdown({ children }: { children: string }) {
           img: () => null,
         }}
       >
-        {children}
+        {normalizeMathDelimiters(children)}
       </ReactMarkdown>
     </div>
   );

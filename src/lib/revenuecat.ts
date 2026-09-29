@@ -1,4 +1,4 @@
-// Chapter Plus through RevenueCat Web Billing.
+// Chapter Plus through RevenueCat Web Billing (or its Test Store while testing).
 //
 // The SDK is loaded on demand (only when someone opens Plus) and configured
 // with the Supabase user id as the RevenueCat app user id, so purchases are
@@ -38,7 +38,11 @@ export interface PlusOffer {
   title: string;
   price: string;
   period: string | null;
-  sandbox: boolean;
+  /**
+   * test_store: RevenueCat Test Store key (test_…), purchases are simulated;
+   * sandbox: Web Billing sandbox (Stripe test cards); live: real payments.
+   */
+  mode: 'test_store' | 'sandbox' | 'live';
 }
 
 function statusOf(info: CustomerInfo): PlusStatus {
@@ -73,7 +77,7 @@ export async function loadPlus(userId: string): Promise<{ status: PlusStatus; of
       title: pkg.product.title || pkg.product.displayName,
       price: pkg.product.currentPrice.formattedPrice,
       period: periodLabel(pkg.product.normalPeriodDuration),
-      sandbox: purchases.isSandbox(),
+      mode: env.revenuecatKey.startsWith('test_') ? 'test_store' : purchases.isSandbox() ? 'sandbox' : 'live',
     } : null,
   };
 }

@@ -241,3 +241,15 @@ describe('formatMinutes', () => {
     expect(formatMinutes(7200)).toBe('2 h');
   });
 });
+
+describe('normalizeMathDelimiters', () => {
+  it('turns backslash-paren and backslash-bracket maths into dollar delimiters outside code', async () => {
+    const { normalizeMathDelimiters: n } = await import('@/lib/mathDelimiters');
+    const r = String.raw;
+    expect(n(r`Use \(V = I R\) here.`)).toBe('Use $V = I R$ here.');
+    expect(n(r`Then \[ I = \frac{V}{R} \] done`)).toBe(r`Then ` + '\n$$\n' + r`I = \frac{V}{R}` + '\n$$\n' + ' done');
+    const code = r`code ` + '`' + r`\(x\)` + '` and\n```\n' + r`\(y\)` + '\n```';
+    expect(n(code)).toBe(code);
+    expect(n('already $x$ fine')).toBe('already $x$ fine');
+  });
+});
