@@ -1,6 +1,7 @@
 import { Link } from 'react-router';
 import { Logo } from '@/components/Logo';
 import { useTitle } from '@/components/layout/Page';
+import { env, type AiProviderName } from '@/lib/env';
 
 /**
  * Plain-language policies describing what the code actually does. Have a
@@ -36,7 +37,7 @@ function Privacy() {
       <h2>How it is used</h2>
       <p>Only to provide Chapter: to calculate your progress, choose practice, personalise tutoring and show you reports. We do not sell personal data or use it for advertising.</p>
       <h2>AI processing</h2>
-      <p>Tutor messages, uploaded images and documents, and the academic context needed to answer them (such as your weakest skills and recent mistakes) are sent to our AI provider (Anthropic) to generate replies, questions and flashcards. They are not used to train models under our agreement with the provider. Questions made from a document you upload are visible only to you. We record how much each AI request cost to run, but not its content, in that record.</p>
+      <AiProcessing provider={env.aiProvider} />
       <h2>Who can see your data</h2>
       <p>Only you. If you link a parent account, that parent can see progress summaries (activity, subject and skill mastery, weak skills, goals and past-paper scores). Parents can never see your tutor conversations, notes or flashcards. You can remove a parent's access at any time. Leaderboards show only your username and weekly XP, and you can opt out.</p>
       <h2>Your rights</h2>
@@ -47,6 +48,22 @@ function Privacy() {
       <p>Questions about privacy: whitspacestudio@gmail.com.</p>
     </>
   );
+}
+
+const WHAT_IS_SENT = 'Tutor messages, uploaded images and documents, and the academic context needed to answer them (such as your weakest skills and recent mistakes)';
+
+export function AiProcessing({ provider }: { provider: AiProviderName }) {
+  const common = 'Questions made from a document you upload are visible only to you. We record how much each AI request cost to run, but not its content, in that record.';
+  if (provider === 'groq') {
+    return <p>{WHAT_IS_SENT} are sent to Groq, Inc. (United States), which runs open AI models (currently OpenAI's gpt-oss and Alibaba's Qwen) on its own servers to generate replies, questions and flashcards. Groq's terms do not allow it to use them to train models, and it keeps them only as needed to provide the service. {common}</p>;
+  }
+  if (provider === 'openrouter') {
+    return <p>{WHAT_IS_SENT} are sent through OpenRouter, Inc. (United States) to Anthropic's Claude models to generate replies, questions and flashcards. Chapter tells OpenRouter to use only providers that do not keep them for training. {common}</p>;
+  }
+  if (provider === 'anthropic') {
+    return <p>{WHAT_IS_SENT} are sent to our AI provider (Anthropic) to generate replies, questions and flashcards. They are not used to train models under our agreement with the provider. {common}</p>;
+  }
+  return <p>AI features are currently switched off, so nothing is sent to an AI provider. Before they are switched on, this section will name the provider and what it receives.</p>;
 }
 
 function Terms() {

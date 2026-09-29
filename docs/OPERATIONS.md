@@ -57,7 +57,7 @@ Suggested alerts (configure in your log tool): any `unhandled` event; `model_err
 
 | Symptom | Check |
 | --- | --- |
-| Tutor says "not available" | `ANTHROPIC_API_KEY` set? Function logs for `provider_unavailable` or `model_error` with `misconfigured` |
+| Tutor says "not available" | A provider key (`GROQ_API_KEY`, `OPENROUTER_API_KEY` or `ANTHROPIC_API_KEY`) set, and `AI_PROVIDER` naming one whose key is set? Function logs for `provider_unavailable` or `model_error` with `misconfigured` |
 | Generation returns nothing | `content_generation_runs.report` for the failed checks; `verify_failed` in logs |
 | Students cannot answer | `submit_attempt` errors in the browser network tab; `rate_limited` / `free_limit_reached` are expected limits |
 | A student should have a paid tier | While the paywall is off everyone already has every feature. Once it is on: `insert into public.admin_grants (email, tier) values ('student@example.com', 'pro')` |

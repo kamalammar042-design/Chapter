@@ -20,7 +20,7 @@ import { errorResponse, sse } from '../_shared/http.ts';
 import { admin, log, readJson, recordUsage, serveAuthed } from '../_shared/server.ts';
 import { routeFor } from '../_shared/ai/models.ts';
 import { AIError, aiErrorToHttp, type ChatTurn } from '../_shared/ai/provider.ts';
-import { createAnthropicProvider } from '../_shared/ai/anthropic.ts';
+import { createProvider } from '../_shared/ai/select.ts';
 import {
   MEMORY_SCHEMA, MEMORY_SYSTEM, MODE_TASK, STABLE_SYSTEM, buildDynamicSystem, composeUserMessage,
   conversationTitle, parseCheckVerdict, sanitizeMemories, type StudentContext,
@@ -48,14 +48,14 @@ serveAuthed('ai-tutor', async ({ req, user, cors }) => {
     return errorResponse(reason, reason === 'slow_down' ? 429 : 402, cors, { cap: gate?.cap, used: gate?.used });
   }
 
-  let provider;
+  let provider, kind;
   try {
-    provider = createAnthropicProvider();
+    ({ provider, kind } = createProvider());
   } catch {
     log('error', 'provider_unavailable', { fn: 'ai-tutor' });
     return errorResponse('ai_unavailable', 503, cors);
   }
-  const route = routeFor(MODE_TASK[input.mode], env);
+  const route = routeFor(MODE_TASK[input.mode], env, kind);
 
   // ---- conversation ----------------------------------------------------
   const userText = composeUserMessage(input.message, input.question);
@@ -173,7 +173,7 @@ serveAuthed('ai-tutor', async ({ req, user, cors }) => {
         if (shouldExtractMemory(input.mode, userText, turns.length)) {
           try {
             const existing = (context.memory ?? []).map((m) => `- ${m.content}`).join('\n') || '(none)';
-            const memRoute = routeFor('memory', env);
+            const memRoute = routeFor('memory', env, kind);
             const memStart = Date.now();
             const res = await provider.json({
               route: memRoute,

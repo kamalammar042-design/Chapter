@@ -50,12 +50,12 @@ Practice gives instant feedback and works offline, so `get_practice_pool()` retu
 
 ## AI
 
-See [AI.md](AI.md#safety). The Anthropic key is only in Edge Function secrets; student-derived text is fenced as data; output is rendered without raw HTML.
+See [AI.md](AI.md#safety). The AI provider key is only in Edge Function secrets; student-derived text is fenced as data; output is rendered without raw HTML.
 
 ## Secrets
 
 - The browser only ever gets the anon key. The app refuses to start if a service-role key is put in a `VITE_` variable.
-- Edge Function secrets: `ANTHROPIC_API_KEY`, `CRON_SECRET` (link checker, compared in constant time). Never commit `supabase/functions/.env` (git-ignored).
+- Edge Function secrets: the AI provider key (`GROQ_API_KEY`, `OPENROUTER_API_KEY` or `ANTHROPIC_API_KEY`), `REVENUECAT_*`, `CRON_SECRET` (link checker, compared in constant time). Never commit `supabase/functions/.env` (git-ignored).
 - Use separate Supabase projects and keys for development, preview and production.
 
 ## Logging

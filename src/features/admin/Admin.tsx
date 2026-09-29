@@ -281,7 +281,7 @@ function AiTab() {
               </table>
             </Card>
           </div>
-          <p className="text-xs text-3">Costs are estimates from token counts and list prices; your Anthropic invoice is authoritative.</p>
+          <p className="text-xs text-3">Costs are estimates from token counts and list prices; your AI provider's invoice is authoritative (Groq's free tier costs nothing).</p>
         </>
       )}
     </div>

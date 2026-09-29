@@ -15,7 +15,7 @@ Nothing AI-written is presented as human-written: generated questions carry "AI-
 
 ## Model routing and cost control
 
-`supabase/functions/_shared/ai/models.ts` maps each task to a model group. Defaults:
+`supabase/functions/_shared/ai/models.ts` maps each task to a model group. Anthropic defaults:
 
 | Group | Default | Why |
 | --- | --- | --- |
@@ -24,6 +24,8 @@ Nothing AI-written is presented as human-written: generated questions carry "AI-
 | `MODEL_GENERATE` | `claude-sonnet-5` | Good writing at volume |
 | `MODEL_VERIFY` | `claude-opus-5` (effort low) | The independent check should be the strongest model |
 | `MODEL_LIGHT` | `claude-haiku-4-5` | Small structured jobs |
+
+Groq defaults: `openai/gpt-oss-120b` for every group except `MODEL_LIGHT` (`openai/gpt-oss-20b`); messages with images go to `qwen/qwen3.8-27b` (`MODEL_VISION`), the only Groq model that reads images. OpenRouter defaults: `anthropic/claude-haiku-4.5` for `MODEL_TUTOR` and `MODEL_LIGHT`, `anthropic/claude-sonnet-5` for the rest.
 
 Override any group with an Edge Function secret (`MODEL_TUTOR=...`), and its effort with `<GROUP>_EFFORT` (`low`/`medium`/`high`). Invalid model names fall back to the default. Adaptive thinking and effort are only sent to models that support them (not Haiku 4.5); server-side refusal fallback only to Opus 5 / Fable 5 families. `TUTOR_MODEL`/`TUTOR_EFFORT` from earlier versions still work for the everyday tutor.
 
@@ -37,7 +39,7 @@ Other cost controls:
 
 ## Usage tracking
 
-Every request writes a row to `ai_usage`: user, kind, task, model, input/output/cache-read tokens, duration, estimated cost, success and error code. Prompts and replies are **not** stored there. `/admin` → AI usage shows totals, failures, cost by model, by task and by day (`admin_ai_usage()`). Costs are estimates from list prices in `models.ts`; the Anthropic invoice is authoritative. Update `PRICES` when prices change.
+Every request writes a row to `ai_usage`: user, kind, task, model, input/output/cache-read tokens, duration, estimated cost, success and error code. Prompts and replies are **not** stored there. `/admin` → AI usage shows totals, failures, cost by model, by task and by day (`admin_ai_usage()`). Costs are estimates from list prices in `models.ts`; the provider's invoice is authoritative (Groq's free tier costs nothing; its rows show what the traffic would cost on a paid plan). Update `PRICES` when prices change.
 
 ## Student context builder
 
@@ -69,4 +71,12 @@ Replies can be saved as notes or turned into flashcards (duplicates skipped).
 
 ## Providers
 
-`_shared/ai/provider.ts` is the provider interface; `anthropic.ts` is the implementation (official SDK). Each call carries its route, so switching or adding a provider means adding one module.
+`_shared/ai/provider.ts` is the provider interface. `select.ts` picks the implementation from the secrets: `AI_PROVIDER` when set (and its key is present), otherwise the first of `ANTHROPIC_API_KEY`, `GROQ_API_KEY`, `OPENROUTER_API_KEY`. The privacy policy names the provider from `VITE_AI_PROVIDER`, so set it to the same value on the web host.
+
+| Provider | Module | Notes |
+| --- | --- | --- |
+| Anthropic | `anthropic.ts` (official SDK) | Prompt caching, adaptive thinking, refusal fallback |
+| Groq | `openai-compat.ts` | Free tier; Groq's terms bar training on inputs and outputs. Free-tier limits are 8,000 tokens a minute and 1,000 requests a day per model for the whole project, so each request is sized to fit `GROQ_TOKEN_BUDGET` (default 7,500): the oldest turns are dropped first and the reply is capped. A rate-limited request is retried once on `openai/gpt-oss-20b`. Cannot read PDFs (question generation from a document says AI is unavailable) |
+| OpenRouter | `openai-compat.ts` | Claude models paid from OpenRouter credit; requests allow only providers that do not collect data (`provider.data_collection: deny`). Reads images and PDFs |
+
+The Groq and OpenRouter accounts must belong to an adult (both require account holders to be 18 or over). Both are covered by `tests/unit/ai-compat.test.ts` with the HTTP layer mocked; a live request is only verified once a key is set.

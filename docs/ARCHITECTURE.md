@@ -9,7 +9,7 @@ Browser (React SPA, PWA)
 Supabase PostgREST ── Postgres (RLS)     Edge Functions (Deno)
                          ▲                 │ service role, filtered by caller
                          └─────────────────┤
-                                           └──► Anthropic API (AI provider)
+                                           └──► AI provider (Groq, OpenRouter or Anthropic)
 ```
 
 - **Web app**: React 19, React Router 7, TanStack Query, TypeScript (strict). Every route is code-split; the Markdown/KaTeX renderer, skills map and practice engine load only on the screens that need them. The question bank is no longer shipped to the browser: questions come from the database.

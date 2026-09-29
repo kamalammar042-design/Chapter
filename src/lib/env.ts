@@ -3,6 +3,13 @@
 const url = (import.meta.env.VITE_SUPABASE_URL as string | undefined)?.trim() ?? '';
 const anonKey = (import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined)?.trim() ?? '';
 
+export type AiProviderName = 'anthropic' | 'groq' | 'openrouter' | null;
+
+function aiProviderOf(v: string | undefined): AiProviderName {
+  const p = (v ?? '').trim().toLowerCase();
+  return p === 'anthropic' || p === 'groq' || p === 'openrouter' ? p : null;
+}
+
 export const env = {
   supabaseUrl: url.replace(/\/$/, ''),
   supabaseAnonKey: anonKey,
@@ -10,6 +17,12 @@ export const env = {
   /** RevenueCat Web Billing public API key; Chapter Plus is offered only when set */
   revenuecatKey: ((import.meta.env.VITE_REVENUECAT_API_KEY as string | undefined) ?? '').trim(),
   revenuecatEntitlement: ((import.meta.env.VITE_REVENUECAT_ENTITLEMENT as string | undefined) ?? 'plus').trim() || 'plus',
+  /**
+   * The AI provider the Edge Functions use (anthropic | groq | openrouter),
+   * named in the privacy policy. Keep it in step with the AI_PROVIDER secret;
+   * empty means AI features are off.
+   */
+  aiProvider: aiProviderOf(import.meta.env.VITE_AI_PROVIDER as string | undefined),
   /** development | preview | production */
   appEnv: ((import.meta.env.VITE_APP_ENV as string | undefined) ?? (import.meta.env.PROD ? 'production' : 'development')),
 } as const;

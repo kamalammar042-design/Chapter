@@ -27,7 +27,7 @@ An adaptive study app for IGCSE and Digital SAT students. It finds your weak ski
 React 19 + TypeScript (Vite, PWA)  ──►  Supabase: Postgres with row-level security, Auth, Storage
                                         │  submit_attempt(): the server judges every answer and
                                         │  updates mastery, spaced review and misconceptions
-                                        └► Edge Functions (Deno) ──► Anthropic Claude (routed by task)
+                                        └► Edge Functions (Deno) ──► AI provider: Groq, OpenRouter or Anthropic (routed by task)
 ```
 
 Details: [architecture](docs/ARCHITECTURE.md), [database and learning model](docs/DATABASE.md), [AI](docs/AI.md), [content pipeline](docs/CONTENT_PIPELINE.md), [security](docs/SECURITY.md).
@@ -35,7 +35,7 @@ Details: [architecture](docs/ARCHITECTURE.md), [database and learning model](doc
 ## Deploy your own
 
 1. Create a Supabase project and apply `supabase/migrations/001`–`019` (`supabase db push`).
-2. Deploy the Edge Functions and set `ANTHROPIC_API_KEY` (see [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)).
+2. Deploy the Edge Functions and set one AI provider key (Groq's free tier works) (see [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)).
 3. Deploy the front end to **Vercel** (`vercel.json`), **Netlify** (`netlify.toml`) or any static host (`public/_redirects`, `public/_headers`) with two environment variables: `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY`.
 
 ## Quick start

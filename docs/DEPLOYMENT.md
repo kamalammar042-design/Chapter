@@ -82,10 +82,13 @@ Secrets (*external*): copy `supabase/functions/.env.example` to `supabase/functi
 
 | Secret | Required | Notes |
 | --- | --- | --- |
-| `ANTHROPIC_API_KEY` | For AI | Without it AI features say "not available"; everything else works |
+| `GROQ_API_KEY`, `OPENROUTER_API_KEY` or `ANTHROPIC_API_KEY` | For AI | One provider key (see [AI.md](AI.md#providers)). Without one, AI features say "not available"; everything else works |
+| `AI_PROVIDER` | No | `anthropic`, `groq` or `openrouter` when more than one key is set |
 | `MODEL_TUTOR`, `MODEL_TUTOR_DEEP`, `MODEL_GENERATE`, `MODEL_VERIFY`, `MODEL_LIGHT` | No | Model routing; see [AI.md](AI.md) |
 | `ALLOWED_ORIGINS` | Recommended | Comma-separated origins |
 | `CRON_SECRET` | For the link checker | 24+ random characters |
+
+Set `VITE_AI_PROVIDER` on the web host to the same provider so the privacy policy names it, and redeploy the site.
 
 Schedule the link checker weekly: see [OPERATIONS.md](OPERATIONS.md#scheduled-jobs).
 

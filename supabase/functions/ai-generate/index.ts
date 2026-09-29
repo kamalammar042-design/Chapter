@@ -18,8 +18,8 @@
 import { SUBJECT_KEY_RE, TOPIC_KEY_RE, errorResponse, jsonResponse } from '../_shared/http.ts';
 import { admin, log, readJson, recordUsage, serveAuthed } from '../_shared/server.ts';
 import { AIError, aiErrorToHttp, type AIProvider, type Attachment } from '../_shared/ai/provider.ts';
-import { createAnthropicProvider } from '../_shared/ai/anthropic.ts';
-import { routeFor } from '../_shared/ai/models.ts';
+import { createProvider } from '../_shared/ai/select.ts';
+import { routeFor, type ProviderKind } from '../_shared/ai/models.ts';
 import { FLASHCARD_SCHEMA, GENERATE_SYSTEM, flashcardPrompt, sanitizeFlashcards } from '../_shared/generate.ts';
 import {
   GENERATION_SCHEMA, GENERATION_SYSTEM, PROMPT_VERSION, VERIFY_SCHEMA, VERIFY_SYSTEM, contentHash, generationPrompt,
@@ -62,15 +62,16 @@ serveAuthed('ai-generate', async ({ req, user, cors }) => {
   }
 
   let provider: AIProvider;
+  let providerName: ProviderKind;
   try {
-    provider = createAnthropicProvider();
+    ({ provider, kind: providerName } = createProvider());
   } catch {
     return errorResponse('ai_unavailable', 503, cors);
   }
   const remaining = Math.max(0, Number(gate.remaining ?? 0) - 1);
 
   if (kind === 'flashcards') {
-    const route = routeFor('flashcards', env);
+    const route = routeFor('flashcards', env, providerName);
     const started = Date.now();
     try {
       const count = clampInt(body.count, 4, 20, 10);
@@ -119,8 +120,8 @@ serveAuthed('ai-generate', async ({ req, user, cors }) => {
   const { data: prof } = await db.from('profiles').select('igcse_tier').eq('id', user.id).maybeSingle();
   const level = subject.program === 'sat' ? 'SAT' : prof?.igcse_tier === 'core' ? 'IGCSE Core' : 'IGCSE Extended';
 
-  const genRoute = routeFor('generate_questions', env);
-  const verifyRoute = routeFor('verify_questions', env);
+  const genRoute = routeFor('generate_questions', env, providerName);
+  const verifyRoute = routeFor('verify_questions', env, providerName);
   const { data: run } = await db.from('content_generation_runs').insert({
     requested_by: user.id, subject_key: subjectKey, topic_key: topicKey, skill_id: typeof body.skill_id === 'string' ? body.skill_id : null,
     requested_count: count, model: genRoute.model,
