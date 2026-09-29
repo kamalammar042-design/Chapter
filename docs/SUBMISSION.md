@@ -48,7 +48,7 @@ Revision apps for IGCSE and SAT mostly count right and wrong answers. But a wron
 - Supabase: Postgres with row-level security on every table, Auth and Edge Functions. Every answer goes through a server function that judges it against the stored key and updates mastery, the review schedule and misconceptions in one transaction, so progress cannot be faked from the client.
 - A small AI provider layer with per-task model routing (a lighter model for small jobs, stronger ones for tutoring, checking work and verifying generated questions) and per-request cost tracking. It runs on Groq's free tier (open models: OpenAI gpt-oss, and Qwen for photos), and can switch to Claude through OpenRouter or Anthropic with one secret. The privacy policy names whichever is active.
 - 51 procedural question families that re-check their own answers by an independent method, plus a seed bank of about 400 questions classified to skills.
-- Tests: about 150 unit tests, 90 database tests that run the real migrations on Postgres (PGlite), and 160 browser tests at six screen sizes, including an automated accessibility audit.
+- Tests: 174 unit tests, 92 database tests that run the real migrations on Postgres (PGlite), 161 browser tests at six screen sizes including an automated accessibility audit, and live tests that sign up, practise, use the AI tutor, buy Plus and delete the account on the deployed site.
 
 ### Monetization with RevenueCat
 

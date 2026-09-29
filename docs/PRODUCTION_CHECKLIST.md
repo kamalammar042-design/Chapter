@@ -4,8 +4,8 @@
 
 ## Before deploying
 
-- [ ] `npm ci && npm run check` passes (typecheck, lint, content seed check, unit, database, build)
-- [ ] `npx playwright install chromium && npm run test:e2e` passes (desktop and phone sizes, accessibility audit)
+- [x] `npm ci && npm run check` passes (typecheck, lint, content seed check, unit, database, build)
+- [x] `npx playwright install chromium && npm run test:e2e` passes (desktop and phone sizes, accessibility audit)
 - [x] Backup of the production database taken _(verified live 2026-09-29: JSON export in `supabase-backup-2026-09-29-14-41`)_
 
 ## Database — Needs live verification
@@ -22,7 +22,7 @@
 ## Edge Functions — Needs live verification
 
 - [x] All four functions deployed (`ai-tutor`, `ai-generate`, `delete-account`, `link-checker`); `link-checker` with `--no-verify-jwt` _(verified live 2026-09-29: unauthenticated calls refused; delete-account removed a test account)_
-- [ ] Tutor: chat, hint (next hint), check my work (verdict badge), explain my mistake from practice, scan a photo, save as note, make flashcards
+- [ ] Tutor: chat, hint (next hint), check my work (verdict badge), explain my mistake from practice, scan a photo, save as note, make flashcards. *Verified live on 2026-09-29 with Groq: chat, hint, check my work, explain my mistake, flashcards (`tests/live/ai.spec.ts`). Not yet: next hint, scanning a photo, save as note.*
 - [ ] Generate questions for a topic: some publish, the run appears in `/admin` → Overview, costs appear in AI usage for both the generate and verify models
 - [ ] Generate from a PDF: questions are practised by the uploader and are not visible to another account
 - [ ] Function logs are JSON lines with no tokens or student text
@@ -38,7 +38,7 @@
 ## Web app — Needs live verification
 
 - [ ] Netlify production and preview contexts have separate Supabase values; preview shows the banner
-- [ ] Security headers present (`curl -I https://your-domain`): CSP, HSTS, X-Frame-Options, Permissions-Policy
+- [x] Security headers present (`curl -I https://your-domain`): CSP, HSTS, X-Frame-Options, Permissions-Policy (checked on the Vercel deployment 2026-09-29)
 - [ ] PWA installs; offline: start a practice session from a subject practised before, answer, reconnect, answers sync once
 - [ ] Real phone (iOS Safari and Android Chrome): tutor input stays above the keyboard; practice, plan and papers usable at 375 px
 
@@ -53,3 +53,10 @@
 
 - [ ] Watch `/admin` → Errors and function logs for the first days
 - [ ] Review AI cost after the first week and adjust model routing if needed
+
+## Chapter Plus (RevenueCat)
+
+- [x] Test Store purchase on the live site grants Plus through `revenuecat-sync`; allowances triple (`tests/live/plus.spec.ts`, 2026-09-29)
+- [x] RevenueCat webhook delivers `TEST` and `INITIAL_PURCHASE` events to `revenuecat-webhook` (recorded in `revenuecat_events`)
+- [x] A Plus supporter can delete their account; the RevenueCat customer record is removed (migration 021)
+- [ ] Before real payments: connect a production Stripe account in RevenueCat, switch `VITE_REVENUECAT_API_KEY` to the production Web Billing key, and repeat the purchase test with a real card

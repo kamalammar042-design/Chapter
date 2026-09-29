@@ -5,7 +5,19 @@
 An adaptive study app for IGCSE and Digital SAT students. It finds your weak skills, recognises the misconception behind each wrong answer, explains that idea, serves the right next question, and brings the skill back days later to check you really learned it. Free to use.
 
 - **Try it:** https://chapter-sepia-omega.vercel.app (free; sign up with any email, no confirmation needed)
-- **Demo video:** _add the video link here_
+
+<p>
+  <img src="submission/screenshots/02-home.png" width="200" alt="Home: recommended next step">
+  <img src="submission/screenshots/04-feedback.png" width="200" alt="A wrong answer with the correct one and its explanation">
+  <img src="submission/screenshots/08-exam-plan.png" width="200" alt="Exam plan">
+  <img src="submission/screenshots/07-progress.png" width="200" alt="Progress">
+</p>
+
+### For judges
+
+1. Open the link, **Create account** (any email; no confirmation), pick IGCSE and a subject or two.
+2. Practise: Study → Physics → Electricity → Guided practice on a skill. Pick a wrong answer to see the misconception feedback, then **Explain my mistake** (live AI tutor).
+3. **Chapter Plus (RevenueCat):** Settings → Usage & Plus → **Get Plus** → **Test valid purchase**. It runs on RevenueCat's Test Store, so nothing is charged. The server confirms the purchase with RevenueCat, the Plus badge appears and the AI allowances triple.
 
 ## What makes it different
 
@@ -19,7 +31,7 @@ An adaptive study app for IGCSE and Digital SAT students. It finds your weak ski
 | **Exam plan** | Built from exam dates and weak skills and rebuilt daily, so a missed day never piles up. |
 | **Honest content** | Every question has recorded provenance. AI-generated questions are solved independently by a second model before publishing. Past papers link to the official publishers rather than being copied. |
 | **Parents** | A student can share progress with a parent, who never sees tutor chats, notes or flashcards. |
-| **Chapter Plus** | Learning is free for everyone. An optional subscription through **RevenueCat Web Billing** triples the AI allowances; access is verified on the server by a RevenueCat webhook and REST check. See [docs/REVENUECAT_SETUP.md](docs/REVENUECAT_SETUP.md). |
+| **Chapter Plus** | Learning is free for everyone. An optional subscription through the **RevenueCat Web SDK** triples the AI allowances; access is verified on the server by a RevenueCat REST check and kept current by RevenueCat webhooks. See [docs/REVENUECAT_SETUP.md](docs/REVENUECAT_SETUP.md). |
 
 ## How it works
 
@@ -34,9 +46,9 @@ Details: [architecture](docs/ARCHITECTURE.md), [database and learning model](doc
 
 ## Deploy your own
 
-1. Create a Supabase project and apply `supabase/migrations/001`–`019` (`supabase db push`).
+1. Create a Supabase project and apply `supabase/migrations/001`–`021` (`supabase db push`).
 2. Deploy the Edge Functions and set one AI provider key (Groq's free tier works) (see [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)).
-3. Deploy the front end to **Vercel** (`vercel.json`), **Netlify** (`netlify.toml`) or any static host (`public/_redirects`, `public/_headers`) with two environment variables: `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY`.
+3. Deploy the front end to **Vercel** (`vercel.json`), **Netlify** (`netlify.toml`) or any static host (`public/_redirects`, `public/_headers`) with `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY`, plus optionally `VITE_REVENUECAT_API_KEY` (Chapter Plus) and `VITE_AI_PROVIDER` (named in the privacy policy).
 
 ## Quick start
 
@@ -46,7 +58,7 @@ cp .env.example .env.local     # add your Supabase URL + anon key
 npm run dev                    # http://localhost:5173
 ```
 
-The database must have migrations `001`–`019` applied and the Edge Functions deployed for sign-in, practice and the tutor to work. See **[docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)**.
+The database must have migrations `001`–`021` applied and the Edge Functions deployed for sign-in, practice and the tutor to work. See **[docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)**.
 
 ## Scripts
 
@@ -62,7 +74,9 @@ The database must have migrations `001`–`019` applied and the Edge Functions d
 | `npm run check` | Everything above except e2e, plus the content seed check |
 | `npm run content:build` | Regenerates `017`/`018` seeds from `src/content` (skills, misconceptions, bank, templates, official links) |
 | `npm run links:check` | Runs the official-link checker (`-- --local` checks the seed list directly) |
-| `npm run icons` | Regenerates PWA icons and the social image |
+| `npm run icons` | Regenerates PWA icons, the social image and the 1024 px store icon |
+| `npx playwright test --config playwright.live.config.ts` | Live smoke, AI and Chapter Plus purchase tests against a deployed site (`LIVE_URL`); each creates and deletes its own account |
+| `node scripts/make-demo-video.mjs` | Builds the captioned demo video from a `playwright.demo.config.ts` recording |
 | `npm run resources:import -- --links links.json` | Adds official links to the resources directory (admin; hosting files needs explicit licence flags) |
 | `node scripts/generate-catalog-sql.mjs` | Regenerates `010_catalog_seed.sql` after editing `src/content/catalog.ts` |
 
@@ -81,12 +95,16 @@ src/
                   errors, telemetry, theme
   styles/         design tokens, base, components, layout, features
 supabase/
-  migrations/     001–018 (apply in order)
-  functions/      ai-tutor, ai-generate, delete-account, link-checker, _shared/
+  migrations/     001–021 (apply in order)
+  functions/      ai-tutor, ai-generate, delete-account, link-checker, revenuecat-webhook,
+                  revenuecat-sync, _shared/ (AI providers, prompts, question pipeline)
   tests/          database test harness + security tests
 tests/
   unit/           Vitest
   e2e/            Playwright + mock backend
+  live/           tests against the deployed site (real accounts, deleted afterwards)
+  demo/, store/   demo video and store screenshot capture
+submission/       1024 px icon and 1179 × 2556 screenshots
 docs/             deployment, architecture, security, AI, database, content, operations
 ```
 
@@ -94,7 +112,8 @@ docs/             deployment, architecture, security, AI, database, content, ope
 
 - [Deployment](docs/DEPLOYMENT.md) and the [production checklist](docs/PRODUCTION_CHECKLIST.md)
 - [Architecture](docs/ARCHITECTURE.md), [database](docs/DATABASE.md) (including rollback) and [security](docs/SECURITY.md)
-- [AI](docs/AI.md): model routing, cost tracking, tutor modes
+- [AI](docs/AI.md): providers, model routing, cost tracking, tutor modes
+- [Chapter Plus with RevenueCat](docs/REVENUECAT_SETUP.md)
 - [Content pipeline](docs/CONTENT_PIPELINE.md) and [content & provenance policy](docs/CONTENT_POLICY.md)
 - [Operations](docs/OPERATIONS.md): admin routine, scheduled jobs, observability, incidents
 
