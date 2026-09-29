@@ -658,4 +658,17 @@ describe('Chapter Plus (020)', () => {
     await db.as(u);
     expect((await db.one<{ a: { plus: boolean } }>(`select public.my_ai_allowance('tutor_message') as a`)).a.plus).toBe(false);
   });
+
+  it('lets a Plus supporter delete their account (021)', async () => {
+    const u = await db.createUser();
+    await db.asService();
+    await db.pg.query(`insert into public.entitlements (user_id, tier, source, external_ref, expires_at, source_event_at) values ($1, 'pro', 'revenuecat', $2, now() + interval '30 days', now())`, [u.id, `rc:${u.id}`]);
+    await db.asAdmin();
+    // Supabase Auth deletes users with search_path = auth
+    await db.pg.exec('begin; set local search_path = auth');
+    await db.pg.query('delete from auth.users where id = $1', [u.id]);
+    await db.pg.exec('commit');
+    const left = await db.one<{ n: number }>('select count(*)::int as n from public.entitlements where user_id = $1', [u.id]);
+    expect(left.n).toBe(0);
+  });
 });

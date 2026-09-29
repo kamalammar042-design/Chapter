@@ -7,7 +7,7 @@ Everything needed for the Devpost form, ready to paste. Deadline: **30 September
 - [ ] Devpost account uses your **student email** (Next Gen eligibility is checked against academic emails)
 - [ ] Under 18? A parent or guardian completes the **consent form** before the deadline
 - [x] **Public GitHub repository** (https://github.com/kamalammar042-design/Chapter), with the MIT licence showing in the repo's About panel (GitHub detects `LICENSE` automatically)
-- [ ] **Demo video under 2 minutes** (script below), uploaded to YouTube or Vimeo as public or unlisted
+- [ ] **Demo video under 2 minutes**: `Chapter-demo.mp4` (1:46, 1080p, captioned) recorded from the live site by `tests/demo/showcase.spec.ts` and built with `node scripts/make-demo-video.mjs`. Upload it to YouTube (Unlisted or Public) and paste the link into Devpost
 - [x] **Try-it link**: https://chapter-sepia-omega.vercel.app (Vercel, connected to the live Supabase project)
 - [ ] Text description (below)
 - [x] **App icon 1024 × 1024**: `submission/icon-1024.png` (regenerate with `npm run icons`)

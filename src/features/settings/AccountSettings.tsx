@@ -115,7 +115,7 @@ function DeleteAccountDialog({ onClose }: { onClose: () => void }) {
 
   return (
     <Dialog open onClose={onClose} busy={busy} title="Delete your account?"
-      description="Any subscription is cancelled and all your data is deleted immediately."
+      description="All your data is deleted immediately. If you have Chapter Plus, cancel it first in Settings → Usage & Plus; deleting your account does not stop the subscription."
       footer={<>
         <Button variant="ghost" onClick={onClose} disabled={busy}>Cancel</Button>
         <Button variant="danger" onClick={run} loading={busy} disabled={confirm !== 'DELETE'}>Delete forever</Button>
