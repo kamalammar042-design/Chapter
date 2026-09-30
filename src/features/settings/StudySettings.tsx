@@ -12,6 +12,7 @@ import { SubjectIcon } from '@/components/SubjectIcon';
 import { browserTimeZone, todayIn } from '@/lib/dates';
 import { errorMessage } from '@/lib/errors';
 import type { StudentSubject } from '@/lib/types';
+import { RemindersCard } from './RemindersCard';
 
 export function StudySettings() {
   const { data: profile } = useProfile();
@@ -99,6 +100,8 @@ export function StudySettings() {
           </div>
         )}
       </Card>
+
+      <RemindersCard />
     </div>
   );
 }

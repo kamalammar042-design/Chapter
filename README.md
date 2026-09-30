@@ -30,6 +30,7 @@ An adaptive study app for IGCSE and Digital SAT students. It finds your weak ski
 | **AI tutor that teaches** | Three hint levels that never give the answer, "check my work" with a clear verdict, explain-my-mistake using the detected misconception, study plans and photo scanning. |
 | **Exam plan** | Built from exam dates and weak skills and rebuilt daily, so a missed day never piles up. |
 | **Honest content** | Every question has recorded provenance. AI-generated questions are solved independently by a second model before publishing. Past papers link to the official publishers rather than being copied. |
+| **Review reminders** | Opt-in web push through **OneSignal**: at most one a day, at the student's chosen hour in their time zone, only when skills are due and they haven't studied yet. The notification only says how many skills are due. |
 | **Parents** | A student can share progress with a parent, who never sees tutor chats, notes or flashcards. |
 | **Chapter Plus** | Learning is free for everyone. An optional subscription through the **RevenueCat Web SDK** triples the AI allowances; access is verified on the server by a RevenueCat REST check and kept current by RevenueCat webhooks. See [docs/REVENUECAT_SETUP.md](docs/REVENUECAT_SETUP.md). |
 
@@ -46,7 +47,7 @@ Details: [architecture](docs/ARCHITECTURE.md), [database and learning model](doc
 
 ## Deploy your own
 
-1. Create a Supabase project and apply `supabase/migrations/001`–`021` (`supabase db push`).
+1. Create a Supabase project and apply `supabase/migrations/001`–`022` (`supabase db push`).
 2. Deploy the Edge Functions and set one AI provider key (Groq's free tier works) (see [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)).
 3. Deploy the front end to **Vercel** (`vercel.json`), **Netlify** (`netlify.toml`) or any static host (`public/_redirects`, `public/_headers`) with `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY`, plus optionally `VITE_REVENUECAT_API_KEY` (Chapter Plus) and `VITE_AI_PROVIDER` (named in the privacy policy).
 
@@ -58,7 +59,7 @@ cp .env.example .env.local     # add your Supabase URL + anon key
 npm run dev                    # http://localhost:5173
 ```
 
-The database must have migrations `001`–`021` applied and the Edge Functions deployed for sign-in, practice and the tutor to work. See **[docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)**.
+The database must have migrations `001`–`022` applied and the Edge Functions deployed for sign-in, practice and the tutor to work. See **[docs/DEPLOYMENT.md](docs/DEPLOYMENT.md)**.
 
 ## Scripts
 
@@ -95,9 +96,9 @@ src/
                   errors, telemetry, theme
   styles/         design tokens, base, components, layout, features
 supabase/
-  migrations/     001–021 (apply in order)
+  migrations/     001–022 (apply in order)
   functions/      ai-tutor, ai-generate, delete-account, link-checker, revenuecat-webhook,
-                  revenuecat-sync, _shared/ (AI providers, prompts, question pipeline)
+                  revenuecat-sync, push-reminders, _shared/ (AI providers, prompts, question pipeline)
   tests/          database test harness + security tests
 tests/
   unit/           Vitest

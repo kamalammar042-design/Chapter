@@ -24,17 +24,18 @@ Run in order in the SQL editor, each file as one query:
 019_free_access.sql
 020_revenuecat_plus.sql
 021_pin_search_paths.sql
+022_review_reminders.sql
 ```
 
 Or with the CLI: `supabase migration repair --status applied 001 … 012` then `supabase db push`.
 
 ### Existing project (only 001–007 applied)
 
-Run 008–021 in order. See the notes on 008 in [DATABASE.md](DATABASE.md).
+Run 008–022 in order. See the notes on 008 in [DATABASE.md](DATABASE.md).
 
 ### New project
 
-`supabase db push`, or 001–021 in order.
+`supabase db push`, or 001–022 in order.
 
 ### What 013–018 change for existing clients
 
@@ -80,6 +81,7 @@ supabase functions deploy delete-account
 supabase functions deploy link-checker --no-verify-jwt   # authenticated by CRON_SECRET
 supabase functions deploy revenuecat-sync
 supabase functions deploy revenuecat-webhook --no-verify-jwt   # authenticated by REVENUECAT_WEBHOOK_AUTH
+supabase functions deploy push-reminders --no-verify-jwt       # authenticated by CRON_SECRET
 ```
 
 Secrets (*external*): copy `supabase/functions/.env.example` to `supabase/functions/.env`, fill it in, then `supabase secrets set --env-file supabase/functions/.env`.
@@ -91,6 +93,7 @@ Secrets (*external*): copy `supabase/functions/.env.example` to `supabase/functi
 | `MODEL_TUTOR`, `MODEL_TUTOR_DEEP`, `MODEL_GENERATE`, `MODEL_VERIFY`, `MODEL_LIGHT` | No | Model routing; see [AI.md](AI.md) |
 | `ALLOWED_ORIGINS` | Recommended | Comma-separated origins |
 | `CRON_SECRET` | For the link checker | 24+ random characters |
+| `ONESIGNAL_APP_ID`, `ONESIGNAL_API_KEY` | For review reminders | OneSignal Web app (Custom Code, site URL = your domain) → Settings → Keys & IDs. Also set `VITE_ONESIGNAL_APP_ID` on the web host; the Settings card appears only then |
 | `REVENUECAT_WEBHOOK_AUTH`, `REVENUECAT_SECRET_KEY`, `REVENUECAT_ENTITLEMENT_ID` | For Chapter Plus | See [REVENUECAT_SETUP.md](REVENUECAT_SETUP.md) |
 
 Set `VITE_AI_PROVIDER` on the web host to the same provider so the privacy policy names it, and redeploy the site.

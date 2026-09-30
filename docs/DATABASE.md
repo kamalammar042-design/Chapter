@@ -21,12 +21,13 @@ Postgres on Supabase. All schema lives in `supabase/migrations`, applied in orde
 | 019 | Free-access switch: `app_settings.paywall_enabled` (off by default); while off, `effective_tier()` gives everyone the highest tier |
 | 020 | Chapter Plus: RevenueCat entitlements (`source = 'revenuecat'`, `source_event_at` ordering), `revenuecat_events` for idempotent webhooks, tripled AI allowances while Plus is active |
 | 021 | Pins `search_path` on `effective_tier()` and trigger functions, so Supabase Auth (search path `auth`) can delete accounts that hold an entitlement |
+| 022 | Review reminders: `review_reminders` (opt-in, local hour, last sent), `push_subscriptions` (OneSignal subscription ids), `my_reminders()` / `set_reminders()` for students, `service_due_reminders()` for the hourly job; data export includes both |
 
 ## Applying
 
-**New project**: `supabase db push`, or run 001–021 in order in the SQL editor.
+**New project**: `supabase db push`, or run 001–022 in order in the SQL editor.
 
-**Existing project with 001–012 applied**: run 013–021 in order (or `supabase db push` after `supabase migration repair --status applied 001 … 012`). The upgrade is tested against a database holding Phase 1 data (`migrations.test.ts`): past papers move into `resources` with the same ids (hosted files become `pending` until an admin confirms the licence), paper attempts keep their links, and existing attempts, flashcards, notes and profiles are untouched.
+**Existing project with 001–012 applied**: run 013–022 in order (or `supabase db push` after `supabase migration repair --status applied 001 … 012`). The upgrade is tested against a database holding Phase 1 data (`migrations.test.ts`): past papers move into `resources` with the same ids (hosted files become `pending` until an admin confirms the licence), paper attempts keep their links, and existing attempts, flashcards, notes and profiles are untouched.
 
 **Re-running**: 013–018 are idempotent (`if not exists`, `drop … if exists`, `on conflict do nothing`). A test applies them twice and checks nothing is duplicated.
 
