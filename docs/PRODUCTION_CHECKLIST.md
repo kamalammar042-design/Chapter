@@ -60,9 +60,3 @@
 - [x] RevenueCat webhook delivers `TEST` and `INITIAL_PURCHASE` events to `revenuecat-webhook` (recorded in `revenuecat_events`)
 - [x] A Plus supporter can delete their account; the RevenueCat customer record is removed (migration 021)
 - [ ] Before real payments: connect a production Stripe account in RevenueCat, switch `VITE_REVENUECAT_API_KEY` to the production Web Billing key, and repeat the purchase test with a real card
-
-## Review reminders (OneSignal)
-
-- [x] Migration 022 applied; `push-reminders` deployed and scheduled hourly (`push-reminders-hourly`); it rejects a wrong `CRON_SECRET`
-- [ ] `ONESIGNAL_APP_ID` / `ONESIGNAL_API_KEY` set as function secrets and `VITE_ONESIGNAL_APP_ID` on the web host
-- [ ] Turn reminders on in Settings → Study on a real browser, make a skill due, and receive the notification at the chosen hour; tapping it opens `/review`

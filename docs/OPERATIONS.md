@@ -42,25 +42,11 @@ select cron.schedule('link-check-weekly', '0 4 * * 1', $$
 $$);
 ```
 
-Or run it by hand: `SUPABASE_URL=... CRON_SECRET=... npm run links:check`.
-
-**Review reminders** (hourly). Deploy `push-reminders` with `--no-verify-jwt`, set `ONESIGNAL_APP_ID` and `ONESIGNAL_API_KEY`, and schedule it the same way:
-
-```sql
-select cron.schedule('push-reminders-hourly', '5 * * * *', $$
-  select net.http_post(
-    url := 'https://<project-ref>.supabase.co/functions/v1/push-reminders',
-    headers := jsonb_build_object('Authorization', 'Bearer <CRON_SECRET>', 'Content-Type', 'application/json'),
-    body := '{}'::jsonb
-  );
-$$);
-```
-
-Each run sends at most one reminder per student per local day (`service_due_reminders`, migration 022), uses a per-student-per-day idempotency key so a retried run cannot send twice, and forgets subscriptions OneSignal reports as gone. Check `select * from cron.job_run_details order by start_time desc limit 5` and the `reminders_done` log line (`due`, `sent`, `skipped`, `failed`, `forgotten`). Without a deployed project, `node scripts/check-links.mjs --local` checks the seed list directly.
+Or run it by hand: `SUPABASE_URL=... CRON_SECRET=... npm run links:check`. Without a deployed project, `node scripts/check-links.mjs --local` checks the seed list directly.
 
 ## Observability
 
-- **Edge Function logs** (Supabase → Edge Functions → Logs): one JSON line per event, e.g. `{"level":"error","event":"model_error","fn":"ai-tutor","task":"tutor_chat","code":"busy"}`. Useful events: `reminders_done`, `unhandled`, `model_error`, `verify_failed`, `questions_generated`, `link_check_done`.
+- **Edge Function logs** (Supabase → Edge Functions → Logs): one JSON line per event, e.g. `{"level":"error","event":"model_error","fn":"ai-tutor","task":"tutor_chat","code":"busy"}`. Useful events: `unhandled`, `model_error`, `verify_failed`, `questions_generated`, `link_check_done`.
 - **Client errors**: `app_events` (admin Errors tab), scrubbed of personal data.
 - **AI cost**: `ai_usage` (admin AI usage tab).
 - **Database**: Supabase → Reports for slow queries.

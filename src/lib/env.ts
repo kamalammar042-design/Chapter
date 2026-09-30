@@ -16,8 +16,6 @@ export const env = {
   isConfigured: /^https:\/\/.+/.test(url) && anonKey.length > 20,
   /** RevenueCat Web Billing public API key; Chapter Plus is offered only when set */
   revenuecatKey: ((import.meta.env.VITE_REVENUECAT_API_KEY as string | undefined) ?? '').trim(),
-  /** OneSignal Web app id (public); review reminders are offered only when set */
-  onesignalAppId: ((import.meta.env.VITE_ONESIGNAL_APP_ID as string | undefined) ?? '').trim(),
   revenuecatEntitlement: ((import.meta.env.VITE_REVENUECAT_ENTITLEMENT as string | undefined) ?? 'plus').trim() || 'plus',
   /**
    * The AI provider the Edge Functions use (anthropic | groq | openrouter),

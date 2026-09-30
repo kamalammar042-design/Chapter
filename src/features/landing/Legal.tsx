@@ -2,7 +2,6 @@ import { Link } from 'react-router';
 import { Logo } from '@/components/Logo';
 import { useTitle } from '@/components/layout/Page';
 import { env, type AiProviderName } from '@/lib/env';
-import { pushConfigured } from '@/lib/push';
 
 /**
  * Plain-language policies describing what the code actually does. Have a
@@ -33,19 +32,12 @@ function Privacy() {
         <li><strong>Chapter Plus:</strong> if you subscribe, RevenueCat and Stripe process the payment. Chapter receives whether your subscription is active and when it renews, never your card details.</li>
         <li><strong>Reports and errors:</strong> problems you report about a question, and technical error reports from the app. Error reports contain what failed and on which page, with personal details removed; your account is recorded only as a one-way code.</li>
         <li><strong>Tutor conversations:</strong> messages you send to the AI tutor, images you upload, and the tutor's replies.</li>
-        {pushConfigured && <li><strong>Review reminders:</strong> if you turn them on, whether they are on, the hour you chose, and an identifier for each browser that receives them. Turning reminders off deletes the identifiers.</li>}
         <li><strong>Tutor memory:</strong> short academic notes the tutor keeps to personalise help (for example "finds rearranging equations hard"). You can see and delete every item in Settings → AI tutor.</li>
       </ul>
       <h2>How it is used</h2>
       <p>Only to provide Chapter: to calculate your progress, choose practice, personalise tutoring and show you reports. We do not sell personal data or use it for advertising.</p>
       <h2>AI processing</h2>
       <AiProcessing provider={env.aiProvider} />
-      {pushConfigured && (
-        <>
-          <h2>Notifications</h2>
-          <p>Review reminders are off unless you turn them on in Settings → Study. When they are on, your browser's push subscription is registered with OneSignal, Inc. (United States), which delivers the notifications. Chapter sends OneSignal only the notification itself, which says how many skills are due for review; no names, subjects, answers or messages. Reminders are for studying only: never marketing.</p>
-        </>
-      )}
       <h2>Who can see your data</h2>
       <p>Only you. If you link a parent account, that parent can see progress summaries (activity, subject and skill mastery, weak skills, goals and past-paper scores). Parents can never see your tutor conversations, notes or flashcards. You can remove a parent's access at any time. Leaderboards show only your username and weekly XP, and you can opt out.</p>
       <h2>Your rights</h2>

@@ -67,7 +67,6 @@ describe('migrations', () => {
       'log_client_event',
       'my_ai_allowance',
       'my_parent_links',
-      'my_reminders',
       'my_students',
       'my_subscription',
       'my_tier',
@@ -76,7 +75,6 @@ describe('migrations', () => {
       'record_skip',
       'remove_parent_link',
       'review_flashcard',
-      'set_reminders',
       'submit_attempt',
     ]);
   });
