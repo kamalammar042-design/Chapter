@@ -8,12 +8,13 @@ import { ToastProvider } from '@/components/ui/Toast';
 const calls: string[] = [];
 let active = false;
 let mode: 'test_store' | 'sandbox' | 'live' = 'sandbox';
+let serverPlus: boolean | null = null; // null: follows the purchase
 
 vi.mock('@/features/auth/AuthProvider', () => ({
   useUser: () => ({ id: '3f2c1b9a-1d2e-4f5a-8b9c-0d1e2f3a4b5c', email: 's@example.com' }),
 }));
-vi.mock('@/data/social', () => ({ useSubscription: () => ({ data: { tier: 'parent', plus: active, active: [] } }) }));
-vi.mock('@/lib/functions', () => ({ invokeFunction: async (name: string) => { calls.push(name); return { ok: true, plus: true }; } }));
+vi.mock('@/data/social', () => ({ useSubscription: () => ({ data: { tier: 'parent', plus: serverPlus ?? active, active: [] } }) }));
+vi.mock('@/lib/functions', () => ({ invokeFunction: async (name: string) => { calls.push(name); return { ok: true, plus: serverPlus ?? active }; } }));
 vi.mock('@/lib/revenuecat', () => ({
   plusAvailable: true,
   loadPlus: async () => ({
@@ -29,7 +30,7 @@ function wrap(ui: ReactNode) {
 }
 
 describe('Chapter Plus card', () => {
-  beforeEach(() => { calls.length = 0; active = false; mode = 'sandbox'; });
+  beforeEach(() => { calls.length = 0; active = false; mode = 'sandbox'; serverPlus = null; });
 
   it('shows the live price and test-mode card, buys through RevenueCat and verifies on the server', async () => {
     const { PlusCard } = await import('@/features/settings/PlusCard');
@@ -41,6 +42,16 @@ describe('Chapter Plus card', () => {
     await user.click(buy);
     await waitFor(() => expect(calls).toEqual(['purchase', 'revenuecat-sync']));
     expect(await screen.findByText(/You are a Plus supporter/)).toBeInTheDocument();
+  });
+
+  it('says "confirming" until the server has recorded the purchase', async () => {
+    active = true;
+    serverPlus = false;
+    const { PlusCard } = await import('@/features/settings/PlusCard');
+    wrap(<PlusCard />);
+    expect(await screen.findByText(/Confirming your purchase with RevenueCat/)).toBeInTheDocument();
+    expect(screen.queryByText(/You are a Plus supporter/)).not.toBeInTheDocument();
+    expect(screen.queryByText('Supporter')).not.toBeInTheDocument();
   });
 
   it('explains the simulated checkout with a Test Store key', async () => {

@@ -34,11 +34,13 @@ export function PlusCard() {
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
-  const refreshServer = async () => {
-    await invokeFunction('revenuecat-sync', {});
+  /** Asks the server to verify with RevenueCat; true once the server has recorded Plus. */
+  const refreshServer = async (): Promise<boolean> => {
+    const res = await invokeFunction<{ plus?: boolean }>('revenuecat-sync', {});
     for (const k of [qk.subscription(user.id), qk.allowance(user.id, 'tutor_message'), qk.allowance(user.id, 'generate')]) {
       await qc.invalidateQueries({ queryKey: k });
     }
+    return res?.plus === true;
   };
 
   useEffect(() => {
@@ -67,8 +69,9 @@ export function PlusCard() {
       const status = await buyPlus(user.id, state.offer.pkg, user.email);
       if (status) {
         setState({ ...state, status });
-        await refreshServer();
-        toast.success(status.active ? 'Welcome to Chapter Plus. Thank you for supporting Chapter.' : 'Purchase received. It may take a moment to show.');
+        const recorded = await refreshServer().catch(() => false);
+        if (recorded) toast.success('Welcome to Chapter Plus. Thank you for supporting Chapter.');
+        else toast.show('Purchase received. Confirming it with RevenueCat…');
       }
     } catch (e) {
       setError(errorMessage(e));
@@ -79,13 +82,16 @@ export function PlusCard() {
 
   const status = state?.status;
   const offer = state?.offer;
+  // The server is the source of truth: "supporter" only once it has verified
+  // the purchase, so the page never claims Plus before the allowance changes.
+  const serverPlus = sub.data?.plus === true;
 
   return (
     <Card accent className="plus-card">
       <CardHeader
         title={<span className="row-sm"><Sparkles size={18} className="text-primary" aria-hidden="true" /> Chapter Plus</span>}
         subtitle="Chapter is free for every student. Plus is an optional subscription for anyone who wants more AI help, and it funds Chapter's AI costs."
-        action={status?.active ? <Badge tone="primary" icon={<Heart />}>Supporter</Badge> : <Badge outline>Optional</Badge>}
+        action={status?.active && serverPlus ? <Badge tone="primary" icon={<Heart />}>Supporter</Badge> : <Badge outline>Optional</Badge>}
       />
       {!state && !error ? <Skeleton height={120} /> : (
         <div className="stack">
@@ -93,7 +99,13 @@ export function PlusCard() {
             {BENEFITS.map((b) => <li key={b}><Check size={15} aria-hidden="true" /> {b}</li>)}
           </ul>
 
-          {status?.active ? (
+          {status?.active && !serverPlus ? (
+            <div className="stack-sm">
+              <p className="text-sm text-2 row-sm"><span className="spinner" aria-hidden="true" /> Confirming your purchase with RevenueCat…</p>
+              <Button variant="secondary" size="sm" style={{ width: 'fit-content' }} loading={busy}
+                onClick={() => { setBusy(true); void refreshServer().catch(() => false).finally(() => setBusy(false)); }}>Check again</Button>
+            </div>
+          ) : status?.active ? (
             <div className="stack-sm">
               <p className="text-sm text-2">
                 You are a Plus supporter{status.expiresAt ? ` · ${status.willRenew ? 'renews' : 'ends'} ${formatDay(status.expiresAt.toISOString().slice(0, 10), { day: 'numeric', month: 'long' })}` : ''}.
